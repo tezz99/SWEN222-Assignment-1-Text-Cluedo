@@ -1,10 +1,16 @@
-package Cluedo;
+package cluedo;
 
-import Cards.Card;
-import Cards.CharacterCard;
-import Cards.RoomCard;
-import Cards.WeaponCard;
+import cards.Card;
+import cards.CharacterCard;
+import cards.RoomCard;
+import cards.WeaponCard;
 
+/**
+ * A triple holds one of each of the three different types of cards in a game of cluedo. 
+ * Used to represent a guess/suggetion, accusation and envelope.
+ * @author tezz9
+ *
+ */
 public class Triple {
 
     private CharacterCard character;

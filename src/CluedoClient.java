@@ -1,7 +1,8 @@
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import Cluedo.Cluedo;
+import cluedo.Cluedo;
+import cluedo.Player;
 
 public class CluedoClient {
 
@@ -12,9 +13,23 @@ public class CluedoClient {
 	System.out.println("Welcome to Text Cluedo!");
 	int numberOfPlayers = this.getNumberOfPlayers();
 	System.out.println("Game set up for " + numberOfPlayers + " players.");
+	System.out.println("---------------------------------------------");
 
 	Cluedo game = new Cluedo(numberOfPlayers); //Create a new game of cluedo.
 
+	while (!game.isGameOver()) {
+	    game.displayBoard();
+
+	    for (Player p : game.getPlayers()) {
+		//If player is not eliminated, allow player to make move.
+		if (!game.getEliminatedPlayers().contains(p)) {
+
+		}
+
+	    }
+
+	    break; //Temporary. To stop from going into infinite loop.
+	}
     }
 
 

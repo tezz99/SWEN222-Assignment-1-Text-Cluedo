@@ -1,13 +1,13 @@
-package Cluedo;
+package cluedo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import Cards.CharacterCard;
-import Cards.Deck;
-import Cards.RoomCard;
-import Cards.WeaponCard;
+import cards.CharacterCard;
+import cards.Deck;
+import cards.RoomCard;
+import cards.WeaponCard;
 
 /**
  * Represents a game of cluedo.
@@ -20,9 +20,12 @@ public class Cluedo {
     public final String weapons[] = {"Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner" };
     public final String rooms[] = {"Kitchen", "Ball Room", "Conservatory", "Billard Room", "Library", "Study", "Hall", "Lounge", "Dining Room"};
 
-    public final Triple solution;
+    public final Triple solutionEnvelope;
 
+    private Board gameBoard;
     private List<Player> players = new ArrayList<>();
+    private List<Player> eliminatedplayers = new ArrayList<>();
+    private Player winner;
 
     private int numberOfPlayers;
 
@@ -32,6 +35,8 @@ public class Cluedo {
      * @param numberOfPlayers
      */
     public Cluedo(int numberOfPlayers) {
+	this.gameBoard = new Board(); //Create a new board.
+
 	this.numberOfPlayers = numberOfPlayers;
 
 	//Create a list of cards for each card type.
@@ -54,7 +59,7 @@ public class Cluedo {
 	    roomCards.add(new RoomCard(s));
 	}
 
-	this.solution = createSolution(characterCards, weaponCards, roomCards); //Create and store the solution of this game as a triple.
+	this.solutionEnvelope = createSolution(characterCards, weaponCards, roomCards); //Create and store the solution of this game as a triple.
 
 	for (int i = 0; i < this.numberOfPlayers; i++) {
 	    this.players.add(new Player (this.characters[i]));
@@ -87,6 +92,33 @@ public class Cluedo {
 	//System.out.println("Solution: " + solution.toString());
 
 	return solution;
+    }
+
+    public void displayBoard() {
+	this.gameBoard.displayBoard();
+    }
+
+    /**
+     * Checks if the game is finished yet or not.
+     */
+    public boolean isGameOver() {
+	return (winner != null);
+    }
+
+    /**
+     * Returns the list of players currently playing the game.
+     * @return
+     */
+    public List<Player> getPlayers() {
+	return this.players;
+    }
+
+    /**
+     * Returns the list of players that have been eliminated from the game.
+     * @return
+     */
+    public List<Player> getEliminatedPlayers() {
+	return this.eliminatedplayers;
     }
 
 }

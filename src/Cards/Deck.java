@@ -1,10 +1,10 @@
-package Cards;
+package cards;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import Cluedo.Player;
+import cluedo.Player;
 
 /**
  * Represents a deck of cards (weapon, 
@@ -29,8 +29,6 @@ public class Deck {
     public void deal(List<Player> players) {
 	Random rand = new Random();
 
-	System.out.println("Dealing cards to players.");
-
 	while (!this.deck.isEmpty()) {
 	    for (Player p : players) {
 
@@ -44,7 +42,6 @@ public class Deck {
 	    }
 	}
 
-	System.out.println("Cards Dealt.");
     }
 
 
