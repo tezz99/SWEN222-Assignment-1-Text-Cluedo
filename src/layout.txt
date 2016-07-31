@@ -23,6 +23,3 @@ R R R R R R R 0 0 R R R R R R R 0 0 D R R R R R R
 R R R R R R R 0 0 R R R R R R R 0 0 R R R R R R R
 R R R R R R R 0 0 R R R R R R R 0 0 R R R R R R R
 R R R R R R 1 0 1 R R R R R R R 1 0 R R R R R R R
-
-
-

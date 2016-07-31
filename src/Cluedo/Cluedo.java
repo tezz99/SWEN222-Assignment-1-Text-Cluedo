@@ -16,15 +16,16 @@ import cards.WeaponCard;
  */
 public class Cluedo {
 
-    public final String characters[] = {"Miss Scarlett", "Colonel Mustard", "Mrs. White", "The Reverend Green", "Mrs. Peacock", "Professor Plum"};
-    public final String weapons[] = {"Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner" };
-    public final String rooms[] = {"Kitchen", "Ball Room", "Conservatory", "Billard Room", "Library", "Study", "Hall", "Lounge", "Dining Room"};
+    public final String characterNames[] = {"Miss Scarlett", "Colonel Mustard", "Mrs. White", "The Reverend Green", "Mrs. Peacock", "Professor Plum"};
+    public final String weaponNames[] = {"Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner" };
+    public final String roomNames[] = {"Kitchen", "Ball Room", "Conservatory", "Billard Room", "Library", "Study", "Hall", "Lounge", "Dining Room"};
 
     public final Triple solutionEnvelope;
 
     private Board gameBoard;
     private List<Player> players = new ArrayList<>();
     private List<Player> eliminatedplayers = new ArrayList<>();
+    private Room rooms[] = new Room[9];
     private Player winner;
 
     private int numberOfPlayers;
@@ -35,9 +36,21 @@ public class Cluedo {
      * @param numberOfPlayers
      */
     public Cluedo(int numberOfPlayers) {
-	this.gameBoard = new Board(); //Create a new board.
 
 	this.numberOfPlayers = numberOfPlayers;
+
+	//Set up players according to the number playing.
+	for (int i = 0; i < this.numberOfPlayers; i++) {
+	    this.players.add(new Player (this.characterNames[i]));
+	}
+
+	//Set up/create rooms and add to rooms array.
+	for (int i = 0; i < this.rooms.length; i++) {
+	    this.rooms[i] = new Room (this.roomNames[i]);
+	}
+
+	this.gameBoard = new Board(this.players); //Create a new board.
+
 
 	//Create a list of cards for each card type.
 	List<CharacterCard> characterCards = new ArrayList<>();
@@ -45,30 +58,27 @@ public class Cluedo {
 	List<RoomCard> roomCards = new ArrayList<>();
 
 	//Add all character cards to respective list.
-	for (String s : this.characters) {
+	for (String s : this.characterNames) {
 	    characterCards.add(new CharacterCard(s));
 	}
 
 	//Add all weapon cards to respective list.
-	for (String s : this.weapons) {
+	for (String s : this.weaponNames) {
 	    weaponCards.add(new WeaponCard(s));
 	}
 
 	//Add all room cards to respective list.
-	for (String s : this.rooms) {
+	for (String s : this.roomNames) {
 	    roomCards.add(new RoomCard(s));
 	}
 
 	this.solutionEnvelope = createSolution(characterCards, weaponCards, roomCards); //Create and store the solution of this game as a triple.
 
-	for (int i = 0; i < this.numberOfPlayers; i++) {
-	    this.players.add(new Player (this.characters[i]));
-	}
-
 	Deck deck = new Deck(characterCards, weaponCards, roomCards); //Creates a new deck that contains the cards remaining after solution has been removed.
 	deck.deal(this.players); //Deal the remaining cards to the plays.
 
     }
+
 
     /**
      * Creates a solution for the game. Picks random character, weapon and room cards and removes them from their lists.

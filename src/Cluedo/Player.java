@@ -14,8 +14,7 @@ public class Player {
 
     List<Card> hand = new ArrayList<>();
 
-    private Integer xPos;
-    private Integer yPos;
+    private Position currentPosition;
 
     private String name;
 
@@ -39,6 +38,7 @@ public class Player {
 	this.hand.add(c);
     }
 
+
     /**
      * Returns the players hand/
      * @return
@@ -47,15 +47,23 @@ public class Player {
 	return this.hand;
     }
 
-    /*
-    public boolean hasCard(Card c) {
-	return this.hand.contains(c);
+
+    //GETTERS AND SETTERS
+    public Position getPosition() {
+	return this.currentPosition;
     }
-     */
+
+    public void setPosition(Position pos) {
+	this.currentPosition = pos;
+    }
+
 
     @Override
     public String toString() {
 	return this.name;
     }
+
+
+
 
 }
