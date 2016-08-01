@@ -23,7 +23,7 @@ public class Deck {
     }
 
     /**
-     * Deal the cards in the deck to the given list of players.
+     * Deal the cards in the deck to the given list of players and return the remaining list of card that cannot be dealt.
      * @param players
      */
     public List<Card> deal(List<Player> players) {

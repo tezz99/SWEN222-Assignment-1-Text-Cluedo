@@ -10,6 +10,30 @@ public class RoomTile implements Tile{
 
 
     /**
+     * Returns room name.
+     * @return
+     */
+    public String getRoomName() {
+	return this.roomName;
+    }
+
+    /**
+     * Returns the room associated to this tile.
+     * @return
+     */
+    public Room getRoom() {
+	return this.room;
+    }
+
+    /**
+     * Returns true if this tile is a door to the room.
+     * @return
+     */
+    public boolean isDoor() {
+	return true;
+    }
+
+    /**
      * Sets given name as the room's name.
      */
     public void setRoomName(String name) {

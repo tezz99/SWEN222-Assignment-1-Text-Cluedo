@@ -8,6 +8,10 @@ public abstract class Card {
 	this.name = name;
     }
 
+    /**
+     * Returns card name
+     * @return
+     */
     public String getName() {
 	return this.name;
     }

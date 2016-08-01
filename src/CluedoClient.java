@@ -50,7 +50,6 @@ public class CluedoClient {
 		System.out.println(this.divider);
 	    }
 
-	    break; //Temporary. To stop from going into infinite loop.
 	}
 	System.out.println(this.divider);
 	System.out.println();

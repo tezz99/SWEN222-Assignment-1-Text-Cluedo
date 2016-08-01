@@ -46,6 +46,13 @@ public class Player {
 	return this.hand;
     }
 
+    /**
+     * Returns true if player is currently in a room.
+     * @return
+     */
+    public boolean isInRoom() {
+	return this.currentRoom != null;
+    }
 
     //GETTERS AND SETTERS
     public Position getPosition() {
@@ -57,11 +64,6 @@ public class Player {
     }
 
 
-    @Override
-    public String toString() {
-	return this.name;
-    }
-
     public Room getCurrentRoom() {
 	return currentRoom;
     }
@@ -70,11 +72,8 @@ public class Player {
 	this.currentRoom = currentRoom;
     }
 
-    public boolean isInRoom() {
-	return this.currentRoom != null;
+    @Override
+    public String toString() {
+	return this.name;
     }
-
-
-
-
 }

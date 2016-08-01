@@ -1,10 +1,13 @@
 package cluedo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Room {
 
     private final String name;
     private Player occupant;
-    private Weapon weapon;
+    private List<Weapon> weapons = new ArrayList<Weapon>();
 
 
     public Room(String name) {
@@ -35,16 +38,28 @@ public class Room {
 	return this.occupant;
     }
 
+    /**
+     * Returns the name of the room
+     * @return
+     */
     public String getRoomName() {
 	return this.name;
     }
 
-    public Weapon getWeapon() {
-	return weapon;
+    /**
+     * Returns the list of weapons in the room. List will be null if there arent any.
+     * @return
+     */
+    public List<Weapon> getWeapons() {
+	return this.weapons;
     }
 
-    public void setWeapon(Weapon weapon) {
-	this.weapon = weapon;
+    /**
+     * Adds weapon to the list of weapons in the room.
+     * @param weapon
+     */
+    public void addWeapon(Weapon weapon) {
+	this.weapons.add(weapon);
     }
 
 }

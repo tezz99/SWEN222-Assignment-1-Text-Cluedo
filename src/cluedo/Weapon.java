@@ -10,6 +10,10 @@ public class Weapon {
 	this.room = room;
     }
 
+    /**
+     * Returns the name of the weapon
+     * @return
+     */
     public String getName() {
 	return name;
     }

@@ -147,48 +147,33 @@ public class Cluedo {
     }
 
     /**
-     * Used for getting the player to make a choice from a list starting from one.
-     * @param min
-     * @param max
-     * @return
-     */
-    public int getPlayerChoice(int max) {
-	Scanner scan = new Scanner(System.in);
-	int selectedOption = 0;
-
-	//Keep asking until valid input provided.
-	while (selectedOption <= 0 || selectedOption > max) {
-	    System.out.print("Enter the number corresponding to your selection: ");
-	    try {
-		selectedOption = scan.nextInt();
-		if (selectedOption > 0  && selectedOption <= max) {
-		    break;
-		}
-	    } catch (InputMismatchException e) {
-		selectedOption = 0;
-		scan.nextLine(); //Skip over invalid inout.
-	    }
-	    System.out.println("Invalid input.");
-	    System.out.println();
-	}
-
-	return selectedOption - 1; //NEED TO CHANGE. Temporary to make it compile.
-    }
-
-    /**
      * Displays information about the position of the player. And if in a room, then displays the weapon in room
      */
     public void displayPlayerStatus(Player p) {
-	System.out.println("---------- " + p.getName().toUpperCase() + "'S TURN ----------" );
+	System.out.println("------------ " + p.getName().toUpperCase() + "'S TURN ------------" );
+
+	int playersRemaining = this.players.size() - this.eliminatedplayers.size();
+	System.out.println("Players remaining: " + playersRemaining + " ("+ this.eliminatedplayers.size() + " eliminated).");
+	System.out.println();
 
 	if (p.isInRoom()) {
 	    System.out.println("Current Room: " + p.getCurrentRoom().getRoomName());
-	    System.out.println("Weapon found in this Room: " + p.getCurrentRoom().getWeapon().getName());
+
+	    //Print the list of weapons in the room if there are any.
+	    if (!p.getCurrentRoom().getWeapons().isEmpty()) {
+		System.out.println("Weapon(s) found in this Room: ");
+		for (int i = 0; i < p.getCurrentRoom().getWeapons().size() - 1; i++) {
+		    System.out.print(p.getCurrentRoom().getWeapons().get(i) + ", ");
+		}
+		System.out.print(p.getCurrentRoom().getWeapons().get(p.getCurrentRoom().getWeapons().size() - 1));
+
+	    }
+
 	} else {
 	    System.out.println("Current Position: ADD COORDINATES HERE");
 	}
 
-	this.displayPublicCards();
+	this.displayPublicCards(); //Display any public cards if there are any.
 
 	//Display the players hand.
 	System.out.println();
@@ -201,14 +186,16 @@ public class Cluedo {
 	System.out.println();
     }
 
+
     /**
      * Player has chosen to move. Move the player according to roll and players choice.
      * @param p
      * @param roll
      */
     public void processMove(Player p, int roll) {
-	System.out.println(p.getName() + " chose to Move and rolled a " + roll);
+	System.out.println(p.getName() + " chose to Move and rolled a " + roll + ".");
     }
+
 
     /**
      * Player has chosen to suggest. Offer suggestion options.
@@ -217,6 +204,7 @@ public class Cluedo {
     public void processSuggestion(Player p) {
 	System.out.println(p.getName() + " chose to make a suggestion.");
     }
+
 
     /**
      * Processes accusation. Gives given player the options to make accusation. Determines if winner or is eliminated.
@@ -269,13 +257,17 @@ public class Cluedo {
     }
 
 
+    /**
+     * Returns winner
+     * @return
+     */
     public Player getWinner() {
 	return this.winner;
     }
 
 
     /**
-     * Returns true if the provided information matches the solution envelope.
+     * Returns true if the provided information matches the solution envelope. Used to check a suggestion or accusation.
      * @return
      */
     public boolean checkEnvelope (String character, String weapon, String room) {
@@ -285,6 +277,9 @@ public class Cluedo {
 	return (solutionCharacter.equals(character) && solutionWeapon.equals(weapon) && solutionRoom.equals(room));
     }
 
+    /**
+     * Print public cards if there are any.
+     */
     public void displayPublicCards() {
 	if (this.publicCards.size() > 0) {
 	    System.out.println();
@@ -296,6 +291,28 @@ public class Cluedo {
 	    System.out.print(this.publicCards.get(this.publicCards.size() - 1));
 
 	}
+    }
+
+
+    /**
+     * Distributes weapons to rooms randomly.
+     */
+    public void distributeWeapons() {
+	int distributedWeapons  = 0;
+	Random rand = new Random();
+
+	while (distributedWeapons < this.weaponNames.length) {
+	    Room currentRoom = this.rooms[rand.nextInt(this.roomNames.length)];
+
+	    //If the current room does not already have a weapon, then add it.
+	    if (currentRoom.getWeapons().isEmpty()) {
+		//System.out.println("Adding weapon: " + this.weaponNames[distributedWeapons] + " to " + currentRoom.getRoomName());
+		currentRoom.addWeapon(new Weapon(this.weaponNames[distributedWeapons], currentRoom));
+		distributedWeapons++;
+	    }
+	}
+
+	//System.out.println("Distributed weapons: " + distributedWeapons);
     }
 
     /**
@@ -322,24 +339,32 @@ public class Cluedo {
     }
 
     /**
-     * Distributes weapons to rooms randomly.
+     * Used for getting the player to make a choice from a list starting from one to max. Essentially a helper method.
+     * @param min
+     * @param max
+     * @return
      */
-    public void distributeWeapons() {
-	int distributedWeapons  = 0;
-	Random rand = new Random();
+    public int getPlayerChoice(int max) {
+	Scanner scan = new Scanner(System.in);
+	int selectedOption = 0;
 
-	while (distributedWeapons < this.weaponNames.length) {
-	    Room currentRoom = this.rooms[rand.nextInt(this.roomNames.length)];
-
-	    //If the current room does not already have a weapon, then add it.
-	    if (currentRoom.getWeapon() == null) {
-		//System.out.println("Adding weapon: " + this.weaponNames[distributedWeapons] + " to " + currentRoom.getRoomName());
-		currentRoom.setWeapon(new Weapon(this.weaponNames[distributedWeapons], currentRoom));
-		distributedWeapons++;
+	//Keep asking until valid input provided.
+	while (selectedOption <= 0 || selectedOption > max) {
+	    System.out.print("Enter the number corresponding to your selection: ");
+	    try {
+		selectedOption = scan.nextInt();
+		if (selectedOption > 0  && selectedOption <= max) {
+		    break;
+		}
+	    } catch (InputMismatchException e) {
+		selectedOption = 0;
+		scan.nextLine(); //Skip over invalid inout.
 	    }
+	    System.out.println("Invalid input.");
+	    System.out.println();
 	}
 
-	System.out.println("Distributed weapons: " + distributedWeapons);
+	return selectedOption - 1; //NEED TO CHANGE. Temporary to make it compile.
     }
 
 }

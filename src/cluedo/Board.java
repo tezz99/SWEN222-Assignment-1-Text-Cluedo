@@ -78,27 +78,6 @@ public class Board {
 
     }
 
-
-    public Room getRoom(String name) {
-	for (Room r : this.rooms) {
-	    if (r.getRoomName().equals(name)) {
-		return r;
-	    }
-	}
-
-	return null;
-    }
-
-    /**
-     * Sets the starting positions of all players playing.
-     */
-    public void setStartPositions() {
-	for (int i = 0; i < this.players.size(); i++) {
-	    this.players.get(i).setPosition(new Position(this.startingPositions[i][0], this.startingPositions[i][1]));
-	}
-    }
-
-
     /**
      * Displays the board (current state of the game) on the console.
      */
@@ -123,10 +102,31 @@ public class Board {
 	    System.out.println();
 
 	}
+    }
 
 
+    /**
+     * Returns the Room object given its name.
+     * @param name
+     * @return
+     */
+    public Room getRoom(String name) {
+	for (Room r : this.rooms) {
+	    if (r.getRoomName().equals(name)) {
+		return r;
+	    }
+	}
 
+	return null;
+    }
 
+    /**
+     * Sets the starting positions of all players playing.
+     */
+    public void setStartPositions() {
+	for (int i = 0; i < this.players.size(); i++) {
+	    this.players.get(i).setPosition(new Position(this.startingPositions[i][0], this.startingPositions[i][1]));
+	}
     }
 
 

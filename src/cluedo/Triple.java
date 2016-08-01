@@ -37,14 +37,26 @@ public class Triple {
 	return false;
     }
 
+    /**
+     * Returns the name of the character in the suggersion of accusation.
+     * @return
+     */
     public String getCharacterName() {
 	return this.character.getName();
     }
 
+    /**
+     * Returns the name of the weapon in the suggersion of accusation.
+     * @return
+     */
     public String getWeaponName() {
 	return this.weapon.getName();
     }
 
+    /**
+     * Returns the name of the room in the suggersion of accusation.
+     * @return
+     */
     public String getRoomName() {
 	return this.room.getName();
     }
