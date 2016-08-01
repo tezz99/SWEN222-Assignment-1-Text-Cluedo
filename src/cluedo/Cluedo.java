@@ -1,8 +1,10 @@
 package cluedo;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 import cards.Card;
 import cards.CharacterCard;
@@ -31,7 +33,6 @@ public class Cluedo {
     private Player winner;
 
     private int numberOfPlayers;
-
 
     /**
      * Create a new game of cluedo.
@@ -104,23 +105,196 @@ public class Cluedo {
 	weaponCards.remove(weaponCard);
 	roomCards.remove(roomCard);
 
-	//System.out.println("Solution: " + solution.toString());
+	System.out.println("Solution: " + solution.toString());
 
 	return solution;
     }
 
+    /**
+     * Displays the gameboard onto console
+     */
     public void displayBoard() {
 	this.gameBoard.displayBoard();
-	printPublicCards();
     }
 
-    public void printPublicCards() {
+    /**
+     * Offer player valid options and return the option selected by player.
+     * @param p
+     * @return
+     */
+    public String offerOptions(Player p) {
+
+	ArrayList<String> options = new ArrayList<>();
+
+	//Add the relevant options avaliable to the player.
+	options.add("Move");
+	if (p.isInRoom()) {
+	    options.add("Suggest");
+	}
+	options.add("Accuse");
+
+	System.out.println("Please select one option from the choices below (1 - " + options.size() + "): ");
+
+	//Print/display the options.
+	for (int i = 0; i < options.size(); i++) {
+	    int optionNum = i + 1;
+	    System.out.println(optionNum + ". " + options.get(i));
+	}
+	System.out.println();
+
+	return options.get(getPlayerChoice(options.size())); //NEED TO CHANGE. Temporary to make it compile.
+
+    }
+
+    /**
+     * Used for getting the player to make a choice from a list starting from one.
+     * @param min
+     * @param max
+     * @return
+     */
+    public int getPlayerChoice(int max) {
+	Scanner scan = new Scanner(System.in);
+	int selectedOption = 0;
+
+	//Keep asking until valid input provided.
+	while (selectedOption <= 0 || selectedOption > max) {
+	    System.out.print("Enter the number corresponding to your selection: ");
+	    try {
+		selectedOption = scan.nextInt();
+		if (selectedOption > 0  && selectedOption <= max) {
+		    break;
+		}
+	    } catch (InputMismatchException e) {
+		selectedOption = 0;
+		scan.nextLine(); //Skip over invalid inout.
+	    }
+	    System.out.println("Invalid input.");
+	    System.out.println();
+	}
+
+	return selectedOption - 1; //NEED TO CHANGE. Temporary to make it compile.
+    }
+
+    /**
+     * Displays information about the position of the player. And if in a room, then displays the weapon in room
+     */
+    public void displayPlayerStatus(Player p) {
+	System.out.println("---------- " + p.getName().toUpperCase() + "'S TURN ----------" );
+
+	if (p.isInRoom()) {
+	    System.out.println("Current Room: " + p.getCurrentRoom().getRoomName());
+	    System.out.println("Weapon found in this Room: " + p.getCurrentRoom().getWeapon().getName());
+	} else {
+	    System.out.println("Current Position: ADD COORDINATES HERE");
+	}
+
+	this.displayPublicCards();
+
+	//Display the players hand.
+	System.out.println();
+	System.out.print("Cards On Hand: ");
+	for (int i = 0; i < p.getHand().size() - 1; i++) {
+	    System.out.print(p.getHand().get(i) + ", ");
+	}
+	System.out.print(p.getHand().get(p.getHand().size() - 1));
+	System.out.println();
+	System.out.println();
+    }
+
+    /**
+     * Player has chosen to move. Move the player according to roll and players choice.
+     * @param p
+     * @param roll
+     */
+    public void processMove(Player p, int roll) {
+	System.out.println(p.getName() + " chose to Move and rolled a " + roll);
+    }
+
+    /**
+     * Player has chosen to suggest. Offer suggestion options.
+     * @param p
+     */
+    public void processSuggestion(Player p) {
+	System.out.println(p.getName() + " chose to make a suggestion.");
+    }
+
+    /**
+     * Processes accusation. Gives given player the options to make accusation. Determines if winner or is eliminated.
+     */
+    public void processAccusation(Player p) {
+	System.out.println(p.getName() + " chose to make an accusation.");
+
+	//Choose character to accuse.
+	System.out.println("Select the CHARACTER (Murderer) from the options below:");
+	for (int i = 0; i < this.characterNames.length; i++) {
+	    int optionNum = i + 1;
+	    System.out.println(optionNum + ". " + this.characterNames[i]);
+	}
+	int characterChoice = getPlayerChoice(this.characterNames.length); //Get the choice from the user/player
+	System.out.println();
+	System.out.println("You chose the following character as the murderer: " + this.characterNames[characterChoice]);
+	System.out.println();
+
+
+	//Choose Muder weapon.
+	System.out.println("Select the MURDER WEAPON from the options below:");
+	for (int i = 0; i < this.weaponNames.length; i++) {
+	    int optionNum = i + 1;
+	    System.out.println(optionNum + ". " + this.weaponNames[i]);
+	}
+	int weaponChoice = getPlayerChoice(this.weaponNames.length); //Get the choice from the user/player
+	System.out.println();
+	System.out.println("You chose the following MURDER WEAPON: " + this.weaponNames[weaponChoice]);
+	System.out.println();
+
+
+	//Choose Room to accuse
+	System.out.println("Select the Room in which the murder occured from the options below:");
+	for (int i = 0; i < this.roomNames.length; i++) {
+	    int optionNum = i + 1;
+	    System.out.println(optionNum + ". " + this.roomNames[i]);
+	}
+	int roomChoice = getPlayerChoice(this.roomNames.length); //Get the choice from the user/player
+	System.out.println();
+	System.out.println("You chose the following room: " + this.roomNames[roomChoice]);
+
+	//If player wins announce winner.
+	if (this.checkEnvelope(this.characterNames[characterChoice], this.weaponNames[weaponChoice], this.roomNames[roomChoice])) {
+	    System.out.println();
+	    System.out.println("ACCUSATION CORRECT!");
+	    this.winner = p;
+	} else {
+	    this.eliminatedplayers.add(p);
+	}
+    }
+
+
+    public Player getWinner() {
+	return this.winner;
+    }
+
+
+    /**
+     * Returns true if the provided information matches the solution envelope.
+     * @return
+     */
+    public boolean checkEnvelope (String character, String weapon, String room) {
+	String solutionCharacter = this.solutionEnvelope.getCharacterName();
+	String solutionWeapon = this.solutionEnvelope.getWeaponName();
+	String solutionRoom = this.solutionEnvelope.getRoomName();
+	return (solutionCharacter.equals(character) && solutionWeapon.equals(weapon) && solutionRoom.equals(room));
+    }
+
+    public void displayPublicCards() {
 	if (this.publicCards.size() > 0) {
 	    System.out.println();
-	    System.out.println("PUBLIC CARDS (Cards visible to everyone):");
-	    for (Card c : this.publicCards) {
-		System.out.println("- " + c.toString());
+	    System.out.print("Public Cards (Visible to everyone): ");
+	    for (int i = 0; i < this.publicCards.size() - 1; i++) {
+		Card c = this.publicCards.get(i);
+		System.out.print(c.toString() + ", ");
 	    }
+	    System.out.print(this.publicCards.get(this.publicCards.size() - 1));
+
 	}
     }
 
@@ -156,8 +330,10 @@ public class Cluedo {
 
 	while (distributedWeapons < this.weaponNames.length) {
 	    Room currentRoom = this.rooms[rand.nextInt(this.roomNames.length)];
+
+	    //If the current room does not already have a weapon, then add it.
 	    if (currentRoom.getWeapon() == null) {
-		System.out.println("Adding weapon: " + this.weaponNames[distributedWeapons] + " to " + currentRoom.getRoomName());
+		//System.out.println("Adding weapon: " + this.weaponNames[distributedWeapons] + " to " + currentRoom.getRoomName());
 		currentRoom.setWeapon(new Weapon(this.weaponNames[distributedWeapons], currentRoom));
 		distributedWeapons++;
 	    }

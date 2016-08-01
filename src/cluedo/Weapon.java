@@ -10,5 +10,8 @@ public class Weapon {
 	this.room = room;
     }
 
+    public String getName() {
+	return name;
+    }
 
 }

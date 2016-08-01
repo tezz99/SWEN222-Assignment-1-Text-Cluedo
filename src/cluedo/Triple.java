@@ -37,6 +37,18 @@ public class Triple {
 	return false;
     }
 
+    public String getCharacterName() {
+	return this.character.getName();
+    }
+
+    public String getWeaponName() {
+	return this.weapon.getName();
+    }
+
+    public String getRoomName() {
+	return this.room.getName();
+    }
+
 
     public String toString() {
 	return "Character: " + this.character.toString() + ", Weapon: " + this.weapon.toString() + ", Room: " + this.room.toString();

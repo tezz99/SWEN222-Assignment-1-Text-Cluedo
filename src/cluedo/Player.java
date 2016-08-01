@@ -13,10 +13,9 @@ import cards.Card;
 public class Player {
 
     List<Card> hand = new ArrayList<>();
-
     private Position currentPosition;
-
     private String name;
+    private Room currentRoom;
 
     public Player(String name) {
 	this.name = name;
@@ -61,6 +60,18 @@ public class Player {
     @Override
     public String toString() {
 	return this.name;
+    }
+
+    public Room getCurrentRoom() {
+	return currentRoom;
+    }
+
+    public void setCurrentRoom(Room currentRoom) {
+	this.currentRoom = currentRoom;
+    }
+
+    public boolean isInRoom() {
+	return this.currentRoom != null;
     }
 
 

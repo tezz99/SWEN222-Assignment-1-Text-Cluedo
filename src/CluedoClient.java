@@ -7,6 +7,8 @@ import cluedo.Player;
 
 public class CluedoClient {
 
+    private final String divider = "-------------------------------------------------";
+
     /**
      * Setup and run a new game of cluedo.
      */
@@ -14,25 +16,46 @@ public class CluedoClient {
 	System.out.println("Welcome to Text Cluedo!");
 	int numberOfPlayers = this.getNumberOfPlayers();
 	System.out.println("Game set up for " + numberOfPlayers + " players.");
-	System.out.println("---------------------------------------------");
+	System.out.println(this.divider);
 
 	Cluedo game = new Cluedo(numberOfPlayers); //Create a new game of cluedo.
 
 	Dice dice = new Dice();
 
 	while (!game.isGameOver()) {
-	    game.displayBoard();
-
 	    for (Player p : game.getPlayers()) {
-		//If player is not eliminated, allow player to make move.
-		if (!game.getEliminatedPlayers().contains(p)) {
 
+		//If player is not eliminated and game is not over, allow player to make move.
+		if (!game.getEliminatedPlayers().contains(p) && !game.isGameOver()) {
+		    game.displayBoard();
+		    System.out.println();
+
+		    game.displayPlayerStatus(p); //Displays player's current position, hand.
+
+		    String selectedOption = game.offerOptions(p); //Ask the player what they want to do and store their choice.
+
+		    if (selectedOption.equals("Move")) {
+			game.processMove(p, dice.roll()); //Player has chosen to move.
+		    } else if (selectedOption.equals("Suggest")) {
+			game.processSuggestion(p); //Player has chosen to make a suggestion. Ask for accusation and check if it is correct.
+		    } else if (selectedOption.equals("Accuse")) {
+			game.processAccusation(p); //Process the accusation. Ask for accusation and check if correct.
+		    }
 		}
 
+		if (game.isGameOver()) {
+		    break;
+		}
+
+		System.out.println(this.divider);
 	    }
 
 	    break; //Temporary. To stop from going into infinite loop.
 	}
+	System.out.println(this.divider);
+	System.out.println();
+	System.out.println("----- GAMEOVER -----");
+	System.out.println(game.getWinner().getName() + " WINS!");
     }
 
 
@@ -47,7 +70,7 @@ public class CluedoClient {
 
 	//Keep asking until valid input provided.
 	while (players < 3 || players > 6) {
-	    System.out.println("Enter the number of players (3-6): ");
+	    System.out.print("Enter the number of players (3-6): ");
 	    try {
 		players = scan.nextInt();
 		if (players >= 3 && players <= 6) {
@@ -59,8 +82,7 @@ public class CluedoClient {
 	    }
 	    System.out.println("Invalid input");
 	}
-	scan.close();
-	System.out.println("---------------------------------------------");
+	System.out.println(this.divider);
 	return players;
     }
 

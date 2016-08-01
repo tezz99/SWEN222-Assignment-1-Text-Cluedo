@@ -68,8 +68,9 @@ public class Board {
 		}
 	    }
 
-	    this.setStartPositions();
+	    this.setStartPositions(); //set each players starting positions in player objects.
 	    this.setDoorTiles(); //Mark certain room tiles as entrances/doors into a particular room.
+	    scan.close();
 
 	} catch (FileNotFoundException e) {
 	    e.printStackTrace();

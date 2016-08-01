@@ -26,7 +26,4 @@ public class Position {
 	this.posY = posY;
     }
 
-
-
-
 }

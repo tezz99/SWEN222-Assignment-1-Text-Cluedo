@@ -16,7 +16,6 @@ public class Dice {
     public int roll() {
 	Random rand = new Random();
 	int roll = rand.nextInt(6) + 1;
-	System.out.println(roll);
 	return roll;
     }
 }
