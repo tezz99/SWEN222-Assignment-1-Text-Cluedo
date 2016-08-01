@@ -2,6 +2,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import cluedo.Cluedo;
+import cluedo.Dice;
 import cluedo.Player;
 
 public class CluedoClient {
@@ -16,6 +17,8 @@ public class CluedoClient {
 	System.out.println("---------------------------------------------");
 
 	Cluedo game = new Cluedo(numberOfPlayers); //Create a new game of cluedo.
+
+	Dice dice = new Dice();
 
 	while (!game.isGameOver()) {
 	    game.displayBoard();

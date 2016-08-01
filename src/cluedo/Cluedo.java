@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import cards.Card;
 import cards.CharacterCard;
 import cards.Deck;
 import cards.RoomCard;
@@ -25,6 +26,7 @@ public class Cluedo {
     private Board gameBoard;
     private List<Player> players = new ArrayList<>();
     private List<Player> eliminatedplayers = new ArrayList<>();
+    private List<Card> publicCards;
     private Room rooms[] = new Room[9];
     private Player winner;
 
@@ -49,7 +51,7 @@ public class Cluedo {
 	    this.rooms[i] = new Room (this.roomNames[i]);
 	}
 
-	this.gameBoard = new Board(this.players); //Create a new board.
+	this.gameBoard = new Board(this.players, this.rooms); //Create a new board.
 
 
 	//Create a list of cards for each card type.
@@ -75,7 +77,7 @@ public class Cluedo {
 	this.solutionEnvelope = createSolution(characterCards, weaponCards, roomCards); //Create and store the solution of this game as a triple.
 
 	Deck deck = new Deck(characterCards, weaponCards, roomCards); //Creates a new deck that contains the cards remaining after solution has been removed.
-	deck.deal(this.players); //Deal the remaining cards to the plays.
+	this.publicCards = deck.deal(this.players); //Deal the remaining cards to the players and take note of undealt cards.
 
     }
 
@@ -106,6 +108,17 @@ public class Cluedo {
 
     public void displayBoard() {
 	this.gameBoard.displayBoard();
+	printPublicCards();
+    }
+
+    public void printPublicCards() {
+	if (this.publicCards.size() > 0) {
+	    System.out.println();
+	    System.out.println("PUBLIC CARDS (Cards visible to everyone):");
+	    for (Card c : this.publicCards) {
+		System.out.println("- " + c.toString());
+	    }
+	}
     }
 
     /**
