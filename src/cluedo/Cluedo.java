@@ -51,6 +51,9 @@ public class Cluedo {
 	    this.rooms[i] = new Room (this.roomNames[i]);
 	}
 
+	distributeWeapons(); //Distribute weapons to rooms randomly.
+
+
 	this.gameBoard = new Board(this.players, this.rooms); //Create a new board.
 
 
@@ -142,6 +145,25 @@ public class Cluedo {
      */
     public List<Player> getEliminatedPlayers() {
 	return this.eliminatedplayers;
+    }
+
+    /**
+     * Distributes weapons to rooms randomly.
+     */
+    public void distributeWeapons() {
+	int distributedWeapons  = 0;
+	Random rand = new Random();
+
+	while (distributedWeapons < this.weaponNames.length) {
+	    Room currentRoom = this.rooms[rand.nextInt(this.roomNames.length)];
+	    if (currentRoom.getWeapon() == null) {
+		System.out.println("Adding weapon: " + this.weaponNames[distributedWeapons] + " to " + currentRoom.getRoomName());
+		currentRoom.setWeapon(new Weapon(this.weaponNames[distributedWeapons], currentRoom));
+		distributedWeapons++;
+	    }
+	}
+
+	System.out.println("Distributed weapons: " + distributedWeapons);
     }
 
 }

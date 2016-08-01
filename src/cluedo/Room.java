@@ -4,6 +4,7 @@ public class Room {
 
     private final String name;
     private Player occupant;
+    private Weapon weapon;
 
 
     public Room(String name) {
@@ -36,6 +37,14 @@ public class Room {
 
     public String getRoomName() {
 	return this.name;
+    }
+
+    public Weapon getWeapon() {
+	return weapon;
+    }
+
+    public void setWeapon(Weapon weapon) {
+	this.weapon = weapon;
     }
 
 }
