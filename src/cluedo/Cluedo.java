@@ -193,7 +193,75 @@ public class Cluedo {
      * @param roll
      */
     public void processMove(Player p, int roll) {
+
+	int movesLeft = roll;
+
 	System.out.println(p.getName() + " chose to Move and rolled a " + roll + ".");
+
+	Position moveTo = null;
+
+	//while (moveTo == null || isValidMove(p, moveTo)) {
+	for (int i = 0; i < roll; i++) {
+	    moveTo = this.getDirection(p); //Get the position the player would like to move to.
+	    p.setPosition(moveTo); //Set the new position of the player
+	    this.displayBoard(); //Show board again to show new position of the player.
+	    movesLeft--;
+	    System.out.println(movesLeft + " Moves remaining in your turn. ");
+	}
+
+	/*
+	┌─────┬──░─────░──┬─────┐
+	│
+	 */
+
+	//}
+
+
+    }
+
+    /**
+     * Ask user for the direction they would like to move.
+     * @return
+     */
+    public Position getDirection(Player p) {
+
+	List<String> validDirections = new ArrayList<String>();
+
+	//Determine possible directions the player can go.
+	Position currentPosition = p.getPosition();
+	if ((currentPosition.getPosY() - 1) >= 0) {
+	    validDirections.add("Up");
+	}
+	if ((currentPosition.getPosY() + 1) <= 24) {
+	    validDirections.add("Down");
+	}
+	if ((currentPosition.getPosX() - 1) >= 0) {
+	    validDirections.add("Left");
+	}
+	if ((currentPosition.getPosY() + 1) <= 24) {
+	    validDirections.add("Right");
+	}
+
+
+	for (int i = 0; i < validDirections.size(); i++) {
+	    int count = i + 1;
+	    System.out.println(count + ". " + validDirections.get(i));
+	}
+
+	Scanner scan = new Scanner(System.in);
+
+	System.out.print("Please enter the direction you would like to move: ");
+	int direction = this.getPlayerChoice(validDirections.size());
+
+
+	return null; //temporary
+    }
+
+    public boolean isValidMove(Player p, Position moveTo) {
+	assert p != null; //Ensure p is not null.
+	assert moveTo != null; //moveTo variable should not be null.
+
+	return false;
     }
 
 
@@ -338,8 +406,9 @@ public class Cluedo {
 	return this.eliminatedplayers;
     }
 
+
     /**
-     * Used for getting the player to make a choice from a list starting from one to max. Essentially a helper method.
+     * Used for getting the player to make a choice from a list starting from 1 to max. Essentially a helper method.
      * @param min
      * @param max
      * @return

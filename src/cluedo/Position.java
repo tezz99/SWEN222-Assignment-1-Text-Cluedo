@@ -10,6 +10,15 @@ public class Position {
 	this.setPosY(posY);
     }
 
+    /**
+     * Checks if this position is equal to the other position given.
+     * @param p
+     * @return
+     */
+    public boolean equals(Position p) {
+	return this.posX == p.posX && this.posY == p.posY;
+    }
+
     //Getters and setters
     public int getPosX() {
 	return posX;
