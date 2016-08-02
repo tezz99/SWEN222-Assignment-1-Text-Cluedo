@@ -206,15 +206,19 @@ public class Cluedo {
 	    p.setPosition(moveTo); //Set the new position of the player
 	    this.displayBoard(); //Show board again to show new position of the player.
 	    movesLeft--;
+
+	    //If player enters a room, 
+	    if (p.isInRoom()) {
+		break;
+	    }
 	    System.out.println(movesLeft + " Moves remaining in your turn. ");
 	}
 
-	/*
-	┌─────┬──░─────░──┬─────┐
-	│
-	 */
 
-	//}
+	//Player just entered a room. They can make a suggestion. 
+	if (p.isInRoom()) {
+	    this.processSuggestion(p);
+	}
 
 
     }
@@ -225,36 +229,46 @@ public class Cluedo {
      */
     public Position getDirection(Player p) {
 
-	List<String> validDirections = new ArrayList<String>();
+	List<String> validDirections = new ArrayList<>();
 
 	//Determine possible directions the player can go.
 	Position currentPosition = p.getPosition();
-	if ((currentPosition.getPosY() - 1) >= 0) {
+	if (currentPosition != null && (currentPosition.getPosY() - 1) >= 0) {
 	    validDirections.add("Up");
 	}
-	if ((currentPosition.getPosY() + 1) <= 24) {
+	if (currentPosition != null && (currentPosition.getPosY() + 1) <= 24) {
 	    validDirections.add("Down");
 	}
-	if ((currentPosition.getPosX() - 1) >= 0) {
+	if (currentPosition != null && (currentPosition.getPosX() - 1) >= 0) {
 	    validDirections.add("Left");
 	}
-	if ((currentPosition.getPosY() + 1) <= 24) {
+	if (currentPosition != null && (currentPosition.getPosY() + 1) <= 24) {
 	    validDirections.add("Right");
 	}
 
+	if (validDirections.isEmpty()) {
+	    throw new Error("No valid directions found! WIll need to change/fix this.");
+	}
 
+	//Print direction options.
 	for (int i = 0; i < validDirections.size(); i++) {
 	    int count = i + 1;
 	    System.out.println(count + ". " + validDirections.get(i));
 	}
 
-	Scanner scan = new Scanner(System.in);
-
 	System.out.print("Please enter the direction you would like to move: ");
 	int direction = this.getPlayerChoice(validDirections.size());
 
+	//Return the new position of the player according to their choice.
+	if (validDirections.get(direction).equals("Up")){
+	    return new Position(p.getPosition().getPosX(), p.getPosition().getPosY() - 1);
+	} else if (validDirections.get(direction).equals("Down")){
+	    return new Position(p.getPosition().getPosX(), p.getPosition().getPosY() + 1);
+	} else if (validDirections.get(direction).equals("Left")) {
+	    return new Position(p.getPosition().getPosX() - 1, p.getPosition().getPosY());
+	}
 
-	return null; //temporary
+	return new Position(p.getPosition().getPosX() + 1, p.getPosition().getPosY()); //Return the new postion that moves they player one tile to the right.
     }
 
     public boolean isValidMove(Player p, Position moveTo) {
