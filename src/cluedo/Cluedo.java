@@ -110,12 +110,6 @@ public class Cluedo {
 	return solution;
     }
 
-    /**
-     * Displays the gameboard onto console
-     */
-    public void displayBoard() {
-	this.gameBoard.displayBoard();
-    }
 
     /**
      * Offer player valid options and return the option selected by player.
@@ -146,46 +140,6 @@ public class Cluedo {
 
     }
 
-    /**
-     * Displays information about the position of the player. And if in a room, then displays the weapon in room
-     */
-    public void displayPlayerStatus(Player p) {
-	System.out.println("------------ " + p.getName().toUpperCase() + "'S TURN ------------" );
-
-	int playersRemaining = this.players.size() - this.eliminatedplayers.size();
-	System.out.println("Players remaining: " + playersRemaining + " ("+ this.eliminatedplayers.size() + " eliminated).");
-	System.out.println();
-
-	if (p.isInRoom()) {
-	    System.out.println("Current Room: " + p.getCurrentRoom().getRoomName());
-
-	    //Print the list of weapons in the room if there are any.
-	    if (!p.getCurrentRoom().getWeapons().isEmpty()) {
-		System.out.println("Weapon(s) found in this Room: ");
-		for (int i = 0; i < p.getCurrentRoom().getWeapons().size() - 1; i++) {
-		    System.out.print(p.getCurrentRoom().getWeapons().get(i) + ", ");
-		}
-		System.out.print(p.getCurrentRoom().getWeapons().get(p.getCurrentRoom().getWeapons().size() - 1));
-
-	    }
-
-	} else {
-	    System.out.println("Current Position: ADD COORDINATES HERE");
-	}
-
-	this.displayPublicCards(); //Display any public cards if there are any.
-
-	//Display the players hand.
-	System.out.println();
-	System.out.print("Cards On Hand: ");
-	for (int i = 0; i < p.getHand().size() - 1; i++) {
-	    System.out.print(p.getHand().get(i) + ", ");
-	}
-	System.out.print(p.getHand().get(p.getHand().size() - 1));
-	System.out.println();
-	System.out.println();
-    }
-
 
     /**
      * Player has chosen to move. Move the player according to roll and players choice.
@@ -214,14 +168,39 @@ public class Cluedo {
 	    System.out.println(movesLeft + " Moves remaining in your turn. ");
 	}
 
-
 	//Player just entered a room. They can make a suggestion. 
 	if (p.isInRoom()) {
 	    this.processSuggestion(p);
 	}
+    }
 
+
+    /**
+     * Gets the coordinates that the player wants to move to and converts it into a position.
+     * @return
+     */
+    public Position getCoordinates(Player p, int diceRoll) {
+
+	List<Position> possiblePositions = getPossiblePositions(p , diceRoll);
+
+
+
+	return null; // neeed to change
+    }
+
+
+    /**
+     * Finds all the possible positions that the player can move given the dice roll and returns it as an array list.
+     * @param p
+     * @param diceRoll
+     * @return
+     */
+    public ArrayList<Position> getPossiblePositions(Player p, int diceRoll) {
+
+	return null; //need to change.
 
     }
+
 
     /**
      * Ask user for the direction they would like to move.
@@ -338,44 +317,6 @@ public class Cluedo {
 	}
     }
 
-
-    /**
-     * Returns winner
-     * @return
-     */
-    public Player getWinner() {
-	return this.winner;
-    }
-
-
-    /**
-     * Returns true if the provided information matches the solution envelope. Used to check a suggestion or accusation.
-     * @return
-     */
-    public boolean checkEnvelope (String character, String weapon, String room) {
-	String solutionCharacter = this.solutionEnvelope.getCharacterName();
-	String solutionWeapon = this.solutionEnvelope.getWeaponName();
-	String solutionRoom = this.solutionEnvelope.getRoomName();
-	return (solutionCharacter.equals(character) && solutionWeapon.equals(weapon) && solutionRoom.equals(room));
-    }
-
-    /**
-     * Print public cards if there are any.
-     */
-    public void displayPublicCards() {
-	if (this.publicCards.size() > 0) {
-	    System.out.println();
-	    System.out.print("Public Cards (Visible to everyone): ");
-	    for (int i = 0; i < this.publicCards.size() - 1; i++) {
-		Card c = this.publicCards.get(i);
-		System.out.print(c.toString() + ", ");
-	    }
-	    System.out.print(this.publicCards.get(this.publicCards.size() - 1));
-
-	}
-    }
-
-
     /**
      * Distributes weapons to rooms randomly.
      */
@@ -397,12 +338,97 @@ public class Cluedo {
 	//System.out.println("Distributed weapons: " + distributedWeapons);
     }
 
+
+    /**
+     * Returns true if the provided information matches the solution envelope. Used to check a suggestion or accusation.
+     * @return
+     */
+    public boolean checkEnvelope (String character, String weapon, String room) {
+	String solutionCharacter = this.solutionEnvelope.getCharacterName();
+	String solutionWeapon = this.solutionEnvelope.getWeaponName();
+	String solutionRoom = this.solutionEnvelope.getRoomName();
+	return (solutionCharacter.equals(character) && solutionWeapon.equals(weapon) && solutionRoom.equals(room));
+    }
+
+
     /**
      * Checks if the game is finished yet or not.
      */
     public boolean isGameOver() {
 	return (winner != null);
     }
+
+    /**
+     * Returns winner
+     * @return
+     */
+    public Player getWinner() {
+	return this.winner;
+    }
+
+    /**
+     * Displays the gameboard onto console
+     */
+    public void displayBoard() {
+	this.gameBoard.displayBoard();
+    }
+
+
+    /**
+     * Displays information about the position of the player. And if in a room, then displays the weapon in room
+     */
+    public void displayPlayerStatus(Player p) {
+	System.out.println("------------ " + p.getName().toUpperCase() + "'S TURN ------------" );
+
+	int playersRemaining = this.players.size() - this.eliminatedplayers.size();
+	System.out.println("Players remaining: " + playersRemaining + " ("+ this.eliminatedplayers.size() + " eliminated).");
+	System.out.println();
+
+	if (p.isInRoom()) {
+	    System.out.println("Current Room: " + p.getCurrentRoom().getRoomName());
+
+	    //Print the list of weapons in the room if there are any.
+	    if (!p.getCurrentRoom().getWeapons().isEmpty()) {
+		System.out.println("Weapon(s) found in this Room: ");
+		for (int i = 0; i < p.getCurrentRoom().getWeapons().size() - 1; i++) {
+		    System.out.print(p.getCurrentRoom().getWeapons().get(i) + ", ");
+		}
+		System.out.print(p.getCurrentRoom().getWeapons().get(p.getCurrentRoom().getWeapons().size() - 1));
+
+	    }
+
+	} else {
+	    System.out.println("Current Position: ADD COORDINATES HERE");
+	}
+
+	this.displayPublicCards(); //Display any public cards if there are any.
+
+	//Display the players hand.
+	System.out.println();
+	System.out.print("Cards On Hand: ");
+	for (int i = 0; i < p.getHand().size() - 1; i++) {
+	    System.out.print(p.getHand().get(i) + ", ");
+	}
+	System.out.print(p.getHand().get(p.getHand().size() - 1));
+	System.out.println();
+	System.out.println();
+    }
+
+    /**
+     * Print public cards if there are any.
+     */
+    public void displayPublicCards() {
+	if (this.publicCards.size() > 0) {
+	    System.out.println();
+	    System.out.print("Public Cards (Visible to everyone): ");
+	    for (int i = 0; i < this.publicCards.size() - 1; i++) {
+		Card c = this.publicCards.get(i);
+		System.out.print(c.toString() + ", ");
+	    }
+	    System.out.print(this.publicCards.get(this.publicCards.size() - 1));
+	}
+    }
+
 
     /**
      * Returns the list of players currently playing the game.

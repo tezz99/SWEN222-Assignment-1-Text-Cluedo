@@ -26,11 +26,11 @@ public class Board {
 	this.players = players;
 	this.rooms = rooms;
 
-	gameBoard = new Tile[width][height];
+	gameBoard = new Tile[width][height]; //Create a gameboard array that holds tiles.
 
+	//read the layout.txt file into the board array 
 	try {
 	    Scanner scan = new Scanner(new File("src/layout.txt"));
-
 	    int xPos = 0;
 	    int yPos = 0;
 
@@ -84,17 +84,21 @@ public class Board {
     public void displayBoard() {
 	System.out.println();
 
-	/*
+
 	//Display the X coordinates at the top.
 	System.out.print("   ");
 	for(int i = 0; i < this.gameBoard.length; i++){
 	    System.out.print(" " + (char)(i + 65));
 	}
-	 */
+	System.out.println();
 
 
 	//Print array.
 	for (int row = 0; row < 25; row++) {
+	    int y = row + 1;
+
+	    if (y < 11) { System.out.print(row + "   ");} else {System.out.print(row + "  ");}; //to correctly print y cootrdinates
+
 	    for (int col = 0; col < 25; col++) {
 		assert this.gameBoard[col][row] != null;
 		System.out.print(this.gameBoard[col][row].toString() + " ");
