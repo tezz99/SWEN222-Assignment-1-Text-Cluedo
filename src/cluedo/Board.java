@@ -414,4 +414,21 @@ public class Board {
     }
 
 
+    /**
+     * Returns the room given the position. If tile is not part of room, returns null.
+     * @param p
+     * @return
+     */
+    public Room getRoom(Position p) {
+
+	//If given position is part of a room.
+	if (this.gameBoard[p.getPosX()][p.getPosY()] instanceof RoomTile) {
+	    RoomTile tile = (RoomTile)this.gameBoard[p.getPosX()][p.getPosY()];
+	    if (tile.isDoor()) {
+		return tile.getRoom();
+	    }
+	}
+	return null;
+    }
+
 }

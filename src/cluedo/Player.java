@@ -71,6 +71,7 @@ public class Player {
     public void setCurrentRoom(Room currentRoom) {
 	this.currentRoom = currentRoom;
 	System.out.println("Room Entered: " + currentRoom.getRoomName());
+
     }
 
     @Override

@@ -2,11 +2,13 @@ package cluedo;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 import cards.Card;
 import cards.CharacterCard;
@@ -152,6 +154,13 @@ public class Cluedo {
 
 	Position moveTo = this.getCoordinates(p, roll); //Get the position the player would like to move to.
 	p.setPosition(moveTo); //Set the new position of the player
+
+	//If player entered a room, update player to reflect this.
+	if (this.gameBoard.isEntranceTile(moveTo)) {
+	    p.setCurrentRoom(this.gameBoard.getRoom(moveTo));
+	    assert this.gameBoard.getRoom(moveTo) != null : "Room was just set to null. This shouldnt happen!";
+	}
+
 	//this.displayBoard(); //Show board again to show new position of the player.
 
 
@@ -168,11 +177,10 @@ public class Cluedo {
      */
     public Position getCoordinates(Player p, int diceRoll) {
 
-	System.out.println("Current Player Positon: " + p.getName() + ": xPos: " + p.getPosition().getPosX() + " yPos: " + p.getPosition().getPosY() );
-	System.out.println();
-
 	//List<Position> possiblePositions = getPossiblePositionsRecursion(p.getPosition() , diceRoll, new HashSet<>());
 	List<Position> possiblePositions = getPossiblePositions(p.getPosition(), diceRoll);
+
+	this.removeDuplicates(possiblePositions);
 
 	if (possiblePositions.isEmpty()) {
 	    throw new Error("No possible positiosn that the player can move to found!");
@@ -182,12 +190,27 @@ public class Cluedo {
 	System.out.println("Where would you like to move to? Select from the options below.");
 	for (int i = 0; i < possiblePositions.size(); i++){
 	    int optionNum = i + 1;
-	    System.out.println(optionNum + ". X = " + possiblePositions.get(i).getPosX() + " Y: " + possiblePositions.get(i).getPosY());
+	    System.out.println(optionNum + ". " + this.posToCoordinates(possiblePositions.get(i)));
 	}
 
 	int choice = this.getPlayerChoice(possiblePositions.size());
 
 	return possiblePositions.get(choice);
+    }
+
+    /**
+     * Remove duplicates from given list.
+     * @param list
+     */
+    public void removeDuplicates(List<Position> list) {
+	List<Position> al = list;
+
+	// add elements to al, including duplicates
+	Set<Position> hs = new HashSet<>();
+	hs.addAll(al);
+	al.clear();
+	al.addAll(hs);
+
     }
 
 
@@ -242,8 +265,6 @@ public class Cluedo {
      * @return
      */
     public List<Position> getSurroundingPositions(Position position) {
-
-	//System.out.println("Finding surrounding positions for: X:" + position.getPosX() + " Y: " + position.getPosY());
 
 	List<Position> surroundingPositions = new ArrayList<> ();
 
@@ -349,6 +370,7 @@ public class Cluedo {
 	}
     }
 
+
     /**
      * Distributes weapons to rooms randomly.
      */
@@ -367,7 +389,7 @@ public class Cluedo {
 	    }
 	}
 
-	//System.out.println("Distributed weapons: " + distributedWeapons);
+	//System.out.println("No. of distributed weapons: " + distributedWeapons);
     }
 
 
@@ -430,7 +452,7 @@ public class Cluedo {
 	    }
 
 	} else {
-	    System.out.println("Current Position: ADD COORDINATES HERE");
+	    System.out.println("Current Position: " + this.posToCoordinates(p.getPosition()));
 	}
 
 	this.displayPublicCards(); //Display any public cards if there are any.
@@ -506,6 +528,18 @@ public class Cluedo {
 	}
 
 	return selectedOption - 1; //NEED TO CHANGE. Temporary to make it compile.
+    }
+
+    public String posToCoordinates(Position pos) {
+
+	//If the position is a room tile, return room name.
+	if (this.gameBoard.isEntranceTile(pos)) {
+	    return this.gameBoard.getRoom(pos).getRoomName();
+	}
+
+	String str = "" + (char)(pos.getPosX()+65)+ "-" + pos.getPosY();
+
+	return str;
     }
 
 }
