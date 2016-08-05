@@ -390,13 +390,23 @@ public class Board {
      */
     public boolean isWalkableTile(Position p) {
 	if (this.gameBoard[p.getPosX()][p.getPosY()] instanceof WalkableTile) {
-	    System.out.println("Tested X: " + p.getPosX() + " and Y: " + p.getPosY() + " and returning true");
+	    //System.out.println("Tested X: " + p.getPosX() + " and Y: " + p.getPosY() + " and returning true as its a walkable tile");
 	    return true;
 	}
 
+	return isEntranceTile(p);
+    }
+
+    /**
+     * Returns true if the tile position given is part of a room and an entrace to the room.
+     * @param p
+     * @return
+     */
+    public boolean isEntranceTile(Position p) {
+
 	if (this.gameBoard[p.getPosX()][p.getPosY()] instanceof RoomTile) {
-	    System.out.println("Tested X: " + p.getPosX() + " and Y: " + p.getPosY() + " and returning true");
 	    RoomTile tile = (RoomTile)this.gameBoard[p.getPosX()][p.getPosY()];
+	    //System.out.println("Tested X: " + p.getPosX() + " and Y: " + p.getPosY() + " and returning " + tile.isDoor());
 	    return tile.isDoor();
 	}
 

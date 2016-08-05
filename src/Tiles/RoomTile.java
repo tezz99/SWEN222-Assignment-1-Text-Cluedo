@@ -6,7 +6,7 @@ public class RoomTile implements Tile{
 
     private String roomName;
     private Room room; //Link to the room.
-    private boolean door = false;
+    private boolean isDoor = false;
 
 
     /**
@@ -30,7 +30,7 @@ public class RoomTile implements Tile{
      * @return
      */
     public boolean isDoor() {
-	return true;
+	return this.isDoor;
     }
 
     /**
@@ -44,7 +44,7 @@ public class RoomTile implements Tile{
      * Sets this tile as a door/entry to the room.
      */
     public void setAsDoor() {
-	this.door = true;
+	this.isDoor = true;
     }
 
     /**
@@ -57,7 +57,7 @@ public class RoomTile implements Tile{
 
     @Override
     public String toString() {
-	if (this.door) {
+	if (this.isDoor) {
 	    return "D";
 	}
 	return "R";

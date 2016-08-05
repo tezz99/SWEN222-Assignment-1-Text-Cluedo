@@ -2,13 +2,11 @@ package cluedo;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.Set;
 
 import cards.Card;
 import cards.CharacterCard;
@@ -171,8 +169,10 @@ public class Cluedo {
     public Position getCoordinates(Player p, int diceRoll) {
 
 	System.out.println("Current Player Positon: " + p.getName() + ": xPos: " + p.getPosition().getPosX() + " yPos: " + p.getPosition().getPosY() );
+	System.out.println();
 
-	List<Position> possiblePositions = getPossiblePositionsRecursion(p.getPosition() , diceRoll, new HashSet<>());
+	//List<Position> possiblePositions = getPossiblePositionsRecursion(p.getPosition() , diceRoll, new HashSet<>());
+	List<Position> possiblePositions = getPossiblePositions(p.getPosition(), diceRoll);
 
 	if (possiblePositions.isEmpty()) {
 	    throw new Error("No possible positiosn that the player can move to found!");
@@ -197,31 +197,44 @@ public class Cluedo {
      * @param diceRoll
      * @return
      */
-    public List<Position> getPossiblePositionsRecursion(Position currentPosition, int movesLeft, Set<Position> visitedSet) {
+    public List<Position> getPossiblePositions(Position position, int diceRoll) {
 
 	List<Position> possiblePositions = new ArrayList<>();
-	Set<Position> visited = visitedSet;
-	Queue<Position> queue = new ArrayDeque<>(); //Holds the possible positions to move next.
+	Queue<MoveInfo> queue = new ArrayDeque <>();
 
-	visited.add(currentPosition);
+	List<Position> surroundingPositions = this.getSurroundingPositions(position);
 
-	if (movesLeft == 0) {
-	    possiblePositions.add(currentPosition);
-	    return possiblePositions;
+	//Add all valid surrounding positions the the queue.
+	for (int i = 0; i < surroundingPositions.size(); i++) {
+	    List<Position> visited = new ArrayList<>(); 
+	    visited.add(position); //Add the starting position to the visited list.
+	    queue.add(new MoveInfo(surroundingPositions.get(i), diceRoll - 1, visited));
 	}
 
-	queue.addAll(this.getSurroundingPositions(currentPosition)); //Add all surrounding positions to the queue.)
-
 	while (!queue.isEmpty()) {
-	    if (!visited.contains(queue.peek())) {
-		possiblePositions.addAll(getPossiblePositionsRecursion(queue.poll(), movesLeft - 1, visited));
-	    } else {
-		queue.poll(); //Already visted tile that is next in queue. Cannot visit again.
+	    MoveInfo moveInfo = queue.poll();
+
+	    //This position is a valid move so add it into the possiblePositions list.
+	    if ((this.gameBoard.isEntranceTile(moveInfo.getPosition())) || (moveInfo.getMovesLeft() == 0 && !possiblePositions.contains(moveInfo.getPosition()) && !moveInfo.getVisited().contains(moveInfo.getPosition()))) {
+		possiblePositions.add(moveInfo.getPosition());
+	    }
+
+	    //Not a valid position. There a are still moves left.
+	    if (moveInfo.getMovesLeft() > 0) {
+
+		surroundingPositions = this.getSurroundingPositions(moveInfo.getPosition());
+		moveInfo.getVisited().add(moveInfo.getPosition()); //Add this position is visted.
+
+		//Add all of the valid surrounding positions to the queue.
+		for (int i = 0; i < surroundingPositions.size(); i++) {
+		    queue.add(new MoveInfo(surroundingPositions.get(i), moveInfo.getMovesLeft() - 1, moveInfo.getVisited()));
+		}
 	    }
 	}
 
 	return possiblePositions;
     }
+
 
     /**
      * Returns a list of valid (walkalbe tiles or room entrances) surrounding positions given a position.
@@ -494,73 +507,5 @@ public class Cluedo {
 
 	return selectedOption - 1; //NEED TO CHANGE. Temporary to make it compile.
     }
-
-
-
-
-    /**
-     * Ask user for the direction they would like to move.
-     * 
-     * LEGACY CODE************************************************************************************************************************
-     * @return
-     */
-    public Position getDirection(Player p) {
-
-	List<String> validDirections = new ArrayList<>();
-
-	//Determine possible directions the player can go.
-	Position currentPosition = p.getPosition();
-	if (currentPosition != null && (currentPosition.getPosY() - 1) >= 0) {
-	    validDirections.add("Up");
-	}
-	if (currentPosition != null && (currentPosition.getPosY() + 1) <= 24) {
-	    validDirections.add("Down");
-	}
-	if (currentPosition != null && (currentPosition.getPosX() - 1) >= 0) {
-	    validDirections.add("Left");
-	}
-	if (currentPosition != null && (currentPosition.getPosY() + 1) <= 24) {
-	    validDirections.add("Right");
-	}
-
-	if (validDirections.isEmpty()) {
-	    throw new Error("No valid directions found! WIll need to change/fix this.");
-	}
-
-	//Print direction options.
-	for (int i = 0; i < validDirections.size(); i++) {
-	    int count = i + 1;
-	    System.out.println(count + ". " + validDirections.get(i));
-	}
-
-	System.out.print("Please enter the direction you would like to move: ");
-	int direction = this.getPlayerChoice(validDirections.size());
-
-	//Return the new position of the player according to their choice.
-	if (validDirections.get(direction).equals("Up")){
-	    return new Position(p.getPosition().getPosX(), p.getPosition().getPosY() - 1);
-	} else if (validDirections.get(direction).equals("Down")){
-	    return new Position(p.getPosition().getPosX(), p.getPosition().getPosY() + 1);
-	} else if (validDirections.get(direction).equals("Left")) {
-	    return new Position(p.getPosition().getPosX() - 1, p.getPosition().getPosY());
-	}
-
-	return new Position(p.getPosition().getPosX() + 1, p.getPosition().getPosY()); //Return the new postion that moves they player one tile to the right.
-    }
-
-    /**
-     * Code to help verify getDirection method.
-     * LEGACY CODE *************************************************************************************************
-     * @param p
-     * @param moveTo
-     * @return
-     */
-    public boolean isValidMove(Player p, Position moveTo) {
-	assert p != null; //Ensure p is not null.
-	assert moveTo != null; //moveTo variable should not be null.
-
-	return false;
-    }
-
 
 }
