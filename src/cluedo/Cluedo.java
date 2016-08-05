@@ -1,10 +1,14 @@
 package cluedo;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 import cards.Card;
 import cards.CharacterCard;
@@ -54,9 +58,7 @@ public class Cluedo {
 
 	distributeWeapons(); //Distribute weapons to rooms randomly.
 
-
 	this.gameBoard = new Board(this.players, this.rooms); //Create a new board.
-
 
 	//Create a list of cards for each card type.
 	List<CharacterCard> characterCards = new ArrayList<>();
@@ -148,25 +150,12 @@ public class Cluedo {
      */
     public void processMove(Player p, int roll) {
 
-	int movesLeft = roll;
-
 	System.out.println(p.getName() + " chose to Move and rolled a " + roll + ".");
 
-	Position moveTo = null;
+	Position moveTo = this.getCoordinates(p, roll); //Get the position the player would like to move to.
+	p.setPosition(moveTo); //Set the new position of the player
+	//this.displayBoard(); //Show board again to show new position of the player.
 
-	//while (moveTo == null || isValidMove(p, moveTo)) {
-	for (int i = 0; i < roll; i++) {
-	    moveTo = this.getDirection(p); //Get the position the player would like to move to.
-	    p.setPosition(moveTo); //Set the new position of the player
-	    this.displayBoard(); //Show board again to show new position of the player.
-	    movesLeft--;
-
-	    //If player enters a room, 
-	    if (p.isInRoom()) {
-		break;
-	    }
-	    System.out.println(movesLeft + " Moves remaining in your turn. ");
-	}
 
 	//Player just entered a room. They can make a suggestion. 
 	if (p.isInRoom()) {
@@ -181,11 +170,24 @@ public class Cluedo {
      */
     public Position getCoordinates(Player p, int diceRoll) {
 
-	List<Position> possiblePositions = getPossiblePositions(p , diceRoll);
+	System.out.println("Current Player Positon: " + p.getName() + ": xPos: " + p.getPosition().getPosX() + " yPos: " + p.getPosition().getPosY() );
+
+	List<Position> possiblePositions = getPossiblePositionsRecursion(p.getPosition() , diceRoll, new HashSet<>());
+
+	if (possiblePositions.isEmpty()) {
+	    throw new Error("No possible positiosn that the player can move to found!");
+	}
 
 
+	System.out.println("Where would you like to move to? Select from the options below.");
+	for (int i = 0; i < possiblePositions.size(); i++){
+	    int optionNum = i + 1;
+	    System.out.println(optionNum + ". X = " + possiblePositions.get(i).getPosX() + " Y: " + possiblePositions.get(i).getPosY());
+	}
 
-	return null; // neeed to change
+	int choice = this.getPlayerChoice(possiblePositions.size());
+
+	return possiblePositions.get(choice);
     }
 
 
@@ -195,66 +197,83 @@ public class Cluedo {
      * @param diceRoll
      * @return
      */
-    public ArrayList<Position> getPossiblePositions(Player p, int diceRoll) {
+    public List<Position> getPossiblePositionsRecursion(Position currentPosition, int movesLeft, Set<Position> visitedSet) {
 
-	return null; //need to change.
+	List<Position> possiblePositions = new ArrayList<>();
+	Set<Position> visited = visitedSet;
+	Queue<Position> queue = new ArrayDeque<>(); //Holds the possible positions to move next.
 
+	visited.add(currentPosition);
+
+	if (movesLeft == 0) {
+	    possiblePositions.add(currentPosition);
+	    return possiblePositions;
+	}
+
+	queue.addAll(this.getSurroundingPositions(currentPosition)); //Add all surrounding positions to the queue.)
+
+	while (!queue.isEmpty()) {
+	    if (!visited.contains(queue.peek())) {
+		possiblePositions.addAll(getPossiblePositionsRecursion(queue.poll(), movesLeft - 1, visited));
+	    } else {
+		queue.poll(); //Already visted tile that is next in queue. Cannot visit again.
+	    }
+	}
+
+	return possiblePositions;
     }
-
 
     /**
-     * Ask user for the direction they would like to move.
+     * Returns a list of valid (walkalbe tiles or room entrances) surrounding positions given a position.
+     * @param position
      * @return
      */
-    public Position getDirection(Player p) {
+    public List<Position> getSurroundingPositions(Position position) {
 
-	List<String> validDirections = new ArrayList<>();
+	//System.out.println("Finding surrounding positions for: X:" + position.getPosX() + " Y: " + position.getPosY());
 
-	//Determine possible directions the player can go.
-	Position currentPosition = p.getPosition();
-	if (currentPosition != null && (currentPosition.getPosY() - 1) >= 0) {
-	    validDirections.add("Up");
-	}
-	if (currentPosition != null && (currentPosition.getPosY() + 1) <= 24) {
-	    validDirections.add("Down");
-	}
-	if (currentPosition != null && (currentPosition.getPosX() - 1) >= 0) {
-	    validDirections.add("Left");
-	}
-	if (currentPosition != null && (currentPosition.getPosY() + 1) <= 24) {
-	    validDirections.add("Right");
-	}
+	List<Position> surroundingPositions = new ArrayList<> ();
 
-	if (validDirections.isEmpty()) {
-	    throw new Error("No valid directions found! WIll need to change/fix this.");
+	int posX = position.getPosX();
+	int posY = position.getPosY();
+
+	//If its possible to move to the right, add to surroundingPositions.
+	if (posX + 1 < this.gameBoard.width) {
+	    Position possiblePosition = new Position(posX + 1, posY);
+	    if (this.gameBoard.isWalkableTile(possiblePosition)) {
+		//System.out.println("Adding X: " + possiblePosition.getPosX() + " Y: " + possiblePosition.getPosY());
+		surroundingPositions.add(possiblePosition);
+	    }
 	}
 
-	//Print direction options.
-	for (int i = 0; i < validDirections.size(); i++) {
-	    int count = i + 1;
-	    System.out.println(count + ". " + validDirections.get(i));
+	//If its possible to move to the left, add to surroundingPositions.
+	if (posX - 1 > 0) {
+	    Position possiblePosition = new Position(posX - 1, posY);
+	    if (this.gameBoard.isWalkableTile(possiblePosition)) {
+		//System.out.println("Adding X: " + possiblePosition.getPosX() + " Y: " + possiblePosition.getPosY());
+		surroundingPositions.add(possiblePosition);
+	    }
 	}
 
-	System.out.print("Please enter the direction you would like to move: ");
-	int direction = this.getPlayerChoice(validDirections.size());
-
-	//Return the new position of the player according to their choice.
-	if (validDirections.get(direction).equals("Up")){
-	    return new Position(p.getPosition().getPosX(), p.getPosition().getPosY() - 1);
-	} else if (validDirections.get(direction).equals("Down")){
-	    return new Position(p.getPosition().getPosX(), p.getPosition().getPosY() + 1);
-	} else if (validDirections.get(direction).equals("Left")) {
-	    return new Position(p.getPosition().getPosX() - 1, p.getPosition().getPosY());
+	//If its possible to move down, add to surroundingPositions.
+	if (posY + 1 < this.gameBoard.height) {
+	    Position possiblePosition = new Position(posX, posY + 1);
+	    if (this.gameBoard.isWalkableTile(possiblePosition)) {
+		//System.out.println("Adding X: " + possiblePosition.getPosX() + " Y: " + possiblePosition.getPosY());
+		surroundingPositions.add(possiblePosition);
+	    }
 	}
 
-	return new Position(p.getPosition().getPosX() + 1, p.getPosition().getPosY()); //Return the new postion that moves they player one tile to the right.
-    }
+	//If its possible to move up, add to surroundingPositions.
+	if (posY - 1 > 0) {
+	    Position possiblePosition = new Position(posX, posY - 1);
+	    if (this.gameBoard.isWalkableTile(possiblePosition)) {
+		//System.out.println("Adding X: " + possiblePosition.getPosX() + " Y: " + possiblePosition.getPosY());
+		surroundingPositions.add(possiblePosition);
+	    }
+	}
 
-    public boolean isValidMove(Player p, Position moveTo) {
-	assert p != null; //Ensure p is not null.
-	assert moveTo != null; //moveTo variable should not be null.
-
-	return false;
+	return surroundingPositions;
     }
 
 
@@ -475,5 +494,73 @@ public class Cluedo {
 
 	return selectedOption - 1; //NEED TO CHANGE. Temporary to make it compile.
     }
+
+
+
+
+    /**
+     * Ask user for the direction they would like to move.
+     * 
+     * LEGACY CODE************************************************************************************************************************
+     * @return
+     */
+    public Position getDirection(Player p) {
+
+	List<String> validDirections = new ArrayList<>();
+
+	//Determine possible directions the player can go.
+	Position currentPosition = p.getPosition();
+	if (currentPosition != null && (currentPosition.getPosY() - 1) >= 0) {
+	    validDirections.add("Up");
+	}
+	if (currentPosition != null && (currentPosition.getPosY() + 1) <= 24) {
+	    validDirections.add("Down");
+	}
+	if (currentPosition != null && (currentPosition.getPosX() - 1) >= 0) {
+	    validDirections.add("Left");
+	}
+	if (currentPosition != null && (currentPosition.getPosY() + 1) <= 24) {
+	    validDirections.add("Right");
+	}
+
+	if (validDirections.isEmpty()) {
+	    throw new Error("No valid directions found! WIll need to change/fix this.");
+	}
+
+	//Print direction options.
+	for (int i = 0; i < validDirections.size(); i++) {
+	    int count = i + 1;
+	    System.out.println(count + ". " + validDirections.get(i));
+	}
+
+	System.out.print("Please enter the direction you would like to move: ");
+	int direction = this.getPlayerChoice(validDirections.size());
+
+	//Return the new position of the player according to their choice.
+	if (validDirections.get(direction).equals("Up")){
+	    return new Position(p.getPosition().getPosX(), p.getPosition().getPosY() - 1);
+	} else if (validDirections.get(direction).equals("Down")){
+	    return new Position(p.getPosition().getPosX(), p.getPosition().getPosY() + 1);
+	} else if (validDirections.get(direction).equals("Left")) {
+	    return new Position(p.getPosition().getPosX() - 1, p.getPosition().getPosY());
+	}
+
+	return new Position(p.getPosition().getPosX() + 1, p.getPosition().getPosY()); //Return the new postion that moves they player one tile to the right.
+    }
+
+    /**
+     * Code to help verify getDirection method.
+     * LEGACY CODE *************************************************************************************************
+     * @param p
+     * @param moveTo
+     * @return
+     */
+    public boolean isValidMove(Player p, Position moveTo) {
+	assert p != null; //Ensure p is not null.
+	assert moveTo != null; //moveTo variable should not be null.
+
+	return false;
+    }
+
 
 }

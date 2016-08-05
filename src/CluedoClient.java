@@ -7,7 +7,7 @@ import cluedo.Player;
 
 public class CluedoClient {
 
-    private final String divider = "-------------------------------------------------";
+    private final String divider = "--------------------------------------------------------------------------------------";
 
     /**
      * Setup and run a new game of cluedo.
@@ -23,11 +23,13 @@ public class CluedoClient {
 	Dice dice = new Dice();
 
 	while (!game.isGameOver()) {
+
 	    for (Player p : game.getPlayers()) {
 
 		//If player is not eliminated and game is not over, allow player to make move.
 		if (!game.getEliminatedPlayers().contains(p) && !game.isGameOver()) {
-		    game.displayBoard();
+
+		    game.displayBoard(); 
 		    System.out.println();
 
 		    game.displayPlayerStatus(p); //Displays player's current position, hand.
@@ -35,7 +37,7 @@ public class CluedoClient {
 		    String selectedOption = game.offerOptions(p); //Ask the player what they want to do and store their choice.
 
 		    if (selectedOption.equals("Move")) {
-			game.processMove(p, dice.roll()); //Player has chosen to move.
+			game.processMove(p, dice.roll()); //Player has chosen to move. 
 		    } else if (selectedOption.equals("Suggest")) {
 			game.processSuggestion(p); //Player has chosen to make a suggestion. Ask for accusation and check if it is correct.
 		    } else if (selectedOption.equals("Accuse")) {
@@ -48,6 +50,8 @@ public class CluedoClient {
 		}
 
 		System.out.println(this.divider);
+
+
 	    }
 
 	}

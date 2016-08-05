@@ -13,8 +13,8 @@ import Tiles.WallTile;
 
 public class Board {
 
-    private final int width = 25;
-    private final int height = 25;
+    public final int width = 25;
+    public final int height = 25;
     private List<Player> players;
     private Tile[][] gameBoard;
     private Room[] rooms;
@@ -382,5 +382,26 @@ public class Board {
 	    throw new Error("Incorrect entrance coordinates.");
 	}
     }
+
+    /**
+     * Returns if a given position is a walkable or a tile that is an entrance to a room.
+     * @param p
+     * @return
+     */
+    public boolean isWalkableTile(Position p) {
+	if (this.gameBoard[p.getPosX()][p.getPosY()] instanceof WalkableTile) {
+	    System.out.println("Tested X: " + p.getPosX() + " and Y: " + p.getPosY() + " and returning true");
+	    return true;
+	}
+
+	if (this.gameBoard[p.getPosX()][p.getPosY()] instanceof RoomTile) {
+	    System.out.println("Tested X: " + p.getPosX() + " and Y: " + p.getPosY() + " and returning true");
+	    RoomTile tile = (RoomTile)this.gameBoard[p.getPosX()][p.getPosY()];
+	    return tile.isDoor();
+	}
+
+	return false;
+    }
+
 
 }
