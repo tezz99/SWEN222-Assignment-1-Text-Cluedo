@@ -7,6 +7,7 @@ import cards.Card;
 
 /**
  * Represents a player in the game.
+ * 
  * @author tezz99
  *
  */
@@ -16,6 +17,7 @@ public class Player {
     private Position currentPosition;
     private String name;
     private Room currentRoom;
+    private int token;
 
     public Player(String name) {
 	this.name = name;
@@ -23,6 +25,7 @@ public class Player {
 
     /**
      * Returns the name of the player.
+     * 
      * @return
      */
     public String getName() {
@@ -31,15 +34,16 @@ public class Player {
 
     /**
      * Adds the given card to the players hand.
+     * 
      * @param c
      */
     public void addToHand(Card c) {
 	this.hand.add(c);
     }
 
-
     /**
      * Returns the players hand/
+     * 
      * @return
      */
     public List<Card> getHand() {
@@ -48,13 +52,14 @@ public class Player {
 
     /**
      * Returns true if player is currently in a room.
+     * 
      * @return
      */
     public boolean isInRoom() {
 	return this.currentRoom != null;
     }
 
-    //GETTERS AND SETTERS
+    // GETTERS AND SETTERS
     public Position getPosition() {
 	return this.currentPosition;
     }
@@ -62,7 +67,6 @@ public class Player {
     public void setPosition(Position pos) {
 	this.currentPosition = pos;
     }
-
 
     public Room getCurrentRoom() {
 	return currentRoom;
@@ -72,6 +76,84 @@ public class Player {
 	this.currentRoom = currentRoom;
 	System.out.println("Room Entered: " + currentRoom.getRoomName());
 
+    }
+
+    public String getToken() {
+	return "" + this.token;
+    }
+
+    public void setToken(int i) {
+	this.token = i;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+	if (this == obj) {
+	    return true;
+	}
+	if (obj == null) {
+	    return false;
+	}
+	if (!(obj instanceof Player)) {
+	    return false;
+	}
+	Player other = (Player) obj;
+	if (currentPosition == null) {
+	    if (other.currentPosition != null) {
+		return false;
+	    }
+	} else if (!currentPosition.equals(other.currentPosition)) {
+	    return false;
+	}
+	if (currentRoom == null) {
+	    if (other.currentRoom != null) {
+		return false;
+	    }
+	} else if (!currentRoom.equals(other.currentRoom)) {
+	    return false;
+	}
+	if (hand == null) {
+	    if (other.hand != null) {
+		return false;
+	    }
+	} else if (!hand.equals(other.hand)) {
+	    return false;
+	}
+	if (name == null) {
+	    if (other.name != null) {
+		return false;
+	    }
+	} else if (!name.equals(other.name)) {
+	    return false;
+	}
+	if (token != other.token) {
+	    return false;
+	}
+	return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result
+		+ ((currentPosition == null) ? 0 : currentPosition.hashCode());
+	result = prime * result
+		+ ((currentRoom == null) ? 0 : currentRoom.hashCode());
+	result = prime * result + ((hand == null) ? 0 : hand.hashCode());
+	result = prime * result + ((name == null) ? 0 : name.hashCode());
+	result = prime * result + token;
+	return result;
     }
 
     @Override

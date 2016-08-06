@@ -97,15 +97,29 @@ public class Board {
 	for (int row = 0; row < 25; row++) {
 	    int y = row + 1;
 
-	    if (y < 11) { System.out.print(row + "   ");} else {System.out.print(row + "  ");}; //to correctly print y cootrdinates
+	    if (y < 11) { System.out.print(row + "  ");} else {System.out.print(row + " ");}; //to correctly print y cootrdinates
 
 	    for (int col = 0; col < 25; col++) {
 		assert this.gameBoard[col][row] != null;
-		System.out.print(this.gameBoard[col][row].toString() + " ");
-	    }
-	    System.out.println();
 
+		boolean tokenPrinted = false;
+
+		for (Player p : this.players) {
+		    if (p.getPosition().getPosX() == col && p.getPosition().getPosY() == row) {
+			System.out.print("|" + p.getToken());
+			tokenPrinted = true;
+		    }
+		}
+		if (!tokenPrinted) {
+		    System.out.print("|" + this.gameBoard[col][row].toString());
+		}
+
+	    }
+	    System.out.print("| " + row);
+	    System.out.println();
 	}
+
+
     }
 
 
@@ -120,7 +134,6 @@ public class Board {
 		return r;
 	    }
 	}
-
 	return null;
     }
 
@@ -129,7 +142,9 @@ public class Board {
      */
     public void setStartPositions() {
 	for (int i = 0; i < this.players.size(); i++) {
-	    this.players.get(i).setPosition(new Position(this.startingPositions[i][0], this.startingPositions[i][1]));
+	    Position currentPos = new Position(this.startingPositions[i][0], this.startingPositions[i][1]);
+	    this.getWalkableTile(currentPos).setOccupied(true);
+	    this.players.get(i).setPosition(currentPos);
 	}
     }
 
@@ -429,6 +444,31 @@ public class Board {
 	    }
 	}
 	return null;
+    }
+
+    /**
+     * Returns the tile at position p/
+     * @param p
+     * @return
+     */
+    public Tile getTile(Position p) {
+	return this.gameBoard[p.getPosX()][p.getPosY()];
+    }
+
+    /**
+     * Returns the walkable tile at given position.
+     * @param p
+     * @return
+     */
+    public WalkableTile getWalkableTile(Position p) {
+	int posX = p.getPosX();
+	int posY = p.getPosY();
+
+	if (this.gameBoard[posX][posY] instanceof WalkableTile) {
+	    return (WalkableTile)this.gameBoard[posX][posY];
+	}
+
+	throw new Error("Position given is not a walkable tile");
     }
 
 }

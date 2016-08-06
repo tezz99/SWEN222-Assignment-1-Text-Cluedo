@@ -7,7 +7,7 @@ import cluedo.Player;
 
 public class CluedoClient {
 
-    private final String divider = "--------------------------------------------------------------------------------------";
+    private final String divider = "----------------------------------- * NEXT ROUND * -----------------------------------";
 
     /**
      * Setup and run a new game of cluedo.
@@ -37,7 +37,7 @@ public class CluedoClient {
 		    String selectedOption = game.offerOptions(p); //Ask the player what they want to do and store their choice.
 
 		    if (selectedOption.equals("Move")) {
-			game.processMove(p, /*dice.roll()*/ 13); //Player has chosen to move. ***********************************
+			game.processMove(p, dice.roll()); //Player has chosen to move.
 		    } else if (selectedOption.equals("Suggest")) {
 			game.processSuggestion(p); //Player has chosen to make a suggestion. Ask for accusation and check if it is correct.
 		    } else if (selectedOption.equals("Accuse")) {
@@ -57,7 +57,7 @@ public class CluedoClient {
 	}
 	System.out.println(this.divider);
 	System.out.println();
-	System.out.println("----- GAMEOVER -----");
+	System.out.println("----------------------------------- *** GAMEOVER *** -----------------------------------");
 	System.out.println(game.getWinner().getName() + " WINS!");
     }
 
@@ -85,7 +85,6 @@ public class CluedoClient {
 	    }
 	    System.out.println("Invalid input");
 	}
-	System.out.println(this.divider);
 	return players;
     }
 

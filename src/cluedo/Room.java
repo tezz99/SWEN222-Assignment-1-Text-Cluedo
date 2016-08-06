@@ -6,8 +6,10 @@ import java.util.List;
 public class Room {
 
     private final String name;
-    private Player occupant;
-    private List<Weapon> weapons = new ArrayList<Weapon>();
+    private List<Player> occupants = new ArrayList<>();
+    private Room secretPassage = null;
+
+    private List<Weapon> weapons = new ArrayList<>();
 
 
     public Room(String name) {
@@ -19,24 +21,52 @@ public class Room {
      * @return
      */
     public boolean isOccupied() {
-	return occupant != null;
+	return !occupants.isEmpty();
     }
+
 
     /**
      * Sets the given player as an occupant of the room.
      * @param occupant
      */
-    public void setOccupant(Player occupant) {
-	this.occupant = occupant;
+    public void addOccupant(Player p) {
+	this.occupants.add(p);
     }
 
     /**
      * Returns the occupant of the room
      * @return
      */
-    public Player getOccupant() {
-	return this.occupant;
+    public void removeOccupant(Player p) {
+	this.occupants.remove(p);
     }
+
+    public boolean hasOccupant(Player p) {
+	return this.occupants.contains(p);
+    }
+
+    /**
+     * Returns true if this room has a secret passage to another room.
+     * @return
+     */
+    public boolean hasSecretPassage() {
+	return this.secretPassage != null;
+    }
+
+    /**
+     * @return the secretPassage
+     */
+    public Room getSecretPassage() {
+	return secretPassage;
+    }
+
+    /**
+     * Set room given as a secret passage
+     */
+    public void setSecretPassage(Room room) {
+	this.secretPassage = room;
+    }
+
 
     /**
      * Returns the name of the room

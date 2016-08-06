@@ -10,6 +10,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
+import Tiles.WalkableTile;
 import cards.Card;
 import cards.CharacterCard;
 import cards.Deck;
@@ -48,7 +49,9 @@ public class Cluedo {
 
 	//Set up players according to the number playing.
 	for (int i = 0; i < this.numberOfPlayers; i++) {
-	    this.players.add(new Player (this.characterNames[i]));
+	    Player current = new Player (this.characterNames[i]);
+	    current.setToken(i + 1);
+	    this.players.add(current);
 	}
 
 	//Set up/create rooms and add to rooms array.
@@ -57,6 +60,7 @@ public class Cluedo {
 	}
 
 	distributeWeapons(); //Distribute weapons to rooms randomly.
+	setSecretPassages(); //Set up secret passages in applicable rooms.
 
 	this.gameBoard = new Board(this.players, this.rooms); //Create a new board.
 
@@ -84,7 +88,6 @@ public class Cluedo {
 
 	Deck deck = new Deck(characterCards, weaponCards, roomCards); //Creates a new deck that contains the cards remaining after solution has been removed.
 	this.publicCards = deck.deal(this.players); //Deal the remaining cards to the players and take note of undealt cards.
-
     }
 
 
@@ -124,10 +127,14 @@ public class Cluedo {
 
 	//Add the relevant options avaliable to the player.
 	options.add("Move");
-	if (p.isInRoom()) {
-	    options.add("Suggest");
-	}
 	options.add("Accuse");
+	//Add option to move to another room via passage if avaliable.
+	if (p.isInRoom()) {
+	    Room currentRoom = p.getCurrentRoom();
+	    if (currentRoom.hasSecretPassage()) {
+		options.add("Secret passage to: " + currentRoom.getSecretPassage().getRoomName());
+	    }
+	}
 
 	System.out.println("Please select one option from the choices below (1 - " + options.size() + "): ");
 
@@ -150,10 +157,17 @@ public class Cluedo {
      */
     public void processMove(Player p, int roll) {
 
-	System.out.println(p.getName() + " chose to Move and rolled a " + roll + ".");
+	System.out.println(" ** " + p.getName() + " chose to Move and rolled a " + roll + "." + " ** ");
+	System.out.println();
 
-	Position moveTo = this.getCoordinates(p, roll); //Get the position the player would like to move to.
+	Position startPosition = p.getPosition();
+	Position moveTo = this.getMove(p, roll); //Get the position the player would like to move to.
 	p.setPosition(moveTo); //Set the new position of the player
+
+	//If player was on a walkable tile before moving, set it as unoccupied now that the player has moved.
+	if (this.gameBoard.getTile(startPosition) instanceof WalkableTile) {
+	    this.gameBoard.getWalkableTile(startPosition).setOccupied(false);
+	}
 
 	//If player entered a room, update player to reflect this.
 	if (this.gameBoard.isEntranceTile(moveTo)) {
@@ -162,7 +176,6 @@ public class Cluedo {
 	}
 
 	//this.displayBoard(); //Show board again to show new position of the player.
-
 
 	//Player just entered a room. They can make a suggestion. 
 	if (p.isInRoom()) {
@@ -175,18 +188,16 @@ public class Cluedo {
      * Gets the coordinates that the player wants to move to and converts it into a position.
      * @return
      */
-    public Position getCoordinates(Player p, int diceRoll) {
+    public Position getMove(Player p, int diceRoll) {
 
 	//List<Position> possiblePositions = getPossiblePositionsRecursion(p.getPosition() , diceRoll, new HashSet<>());
 	List<Position> possiblePositions = getPossiblePositions(p.getPosition(), diceRoll);
 
-	this.removeDuplicates(possiblePositions);
+	this.removeDuplicates(possiblePositions); //Remove duplicate coordinates from list.
 
-	if (possiblePositions.isEmpty()) {
-	    throw new Error("No possible positiosn that the player can move to found!");
-	}
+	assert (!possiblePositions.isEmpty()) : "No possible positions that the player can move to found!";
 
-
+	//Display options avaliable to a player.
 	System.out.println("Where would you like to move to? Select from the options below.");
 	for (int i = 0; i < possiblePositions.size(); i++){
 	    int optionNum = i + 1;
@@ -194,8 +205,7 @@ public class Cluedo {
 	}
 
 	int choice = this.getPlayerChoice(possiblePositions.size());
-
-	return possiblePositions.get(choice);
+	return possiblePositions.get(choice); 
     }
 
     /**
@@ -238,7 +248,12 @@ public class Cluedo {
 	    MoveInfo moveInfo = queue.poll();
 
 	    //This position is a valid move so add it into the possiblePositions list.
-	    if ((this.gameBoard.isEntranceTile(moveInfo.getPosition())) || (moveInfo.getMovesLeft() == 0 && !possiblePositions.contains(moveInfo.getPosition()) && !moveInfo.getVisited().contains(moveInfo.getPosition()))) {
+	    if ((this.gameBoard.isEntranceTile(moveInfo.getPosition())) || (moveInfo.getMovesLeft() == 0 && !possiblePositions.contains(moveInfo.getPosition()) && !moveInfo.getVisited().contains(moveInfo.getPosition()) && !this.gameBoard.getWalkableTile(moveInfo.getPosition()).isOccupied())) {
+
+		if (this.gameBoard.isEntranceTile(moveInfo.getPosition())) {
+
+		}
+
 		possiblePositions.add(moveInfo.getPosition());
 	    }
 
@@ -317,6 +332,8 @@ public class Cluedo {
      */
     public void processSuggestion(Player p) {
 	System.out.println(p.getName() + " chose to make a suggestion.");
+
+	//Move weapons according to suggestion?
     }
 
 
@@ -388,8 +405,18 @@ public class Cluedo {
 		distributedWeapons++;
 	    }
 	}
-
 	//System.out.println("No. of distributed weapons: " + distributedWeapons);
+    }
+
+
+    /**
+     * Set up the secret passages for the diagonal rooms.
+     */
+    public void setSecretPassages() {
+	this.getRoom("Kitchen").setSecretPassage(this.getRoom("Study")); //Set passage from kitchen to study.
+	this.getRoom("Study").setSecretPassage(this.getRoom("Kitchen")); //Set passage from study to kitchen
+	this.getRoom("Lounge").setSecretPassage(this.getRoom("Conservatory")); //Set passage from Lounge to Conservatory
+	this.getRoom("Conservatory").setSecretPassage(this.getRoom("Lounge")); //Set passage from Conservatory to Lounge
     }
 
 
@@ -432,7 +459,7 @@ public class Cluedo {
      * Displays information about the position of the player. And if in a room, then displays the weapon in room
      */
     public void displayPlayerStatus(Player p) {
-	System.out.println("------------ " + p.getName().toUpperCase() + "'S TURN ------------" );
+	System.out.println("------------------ " + p.getName().toUpperCase() + "'S TURN (PLAYER " + p.getToken() + ")" + "------------------");
 
 	int playersRemaining = this.players.size() - this.eliminatedplayers.size();
 	System.out.println("Players remaining: " + playersRemaining + " ("+ this.eliminatedplayers.size() + " eliminated).");
@@ -530,6 +557,11 @@ public class Cluedo {
 	return selectedOption - 1; //NEED TO CHANGE. Temporary to make it compile.
     }
 
+    /**
+     * Converts position given to coordinaates or room name.
+     * @param pos
+     * @return
+     */
     public String posToCoordinates(Position pos) {
 
 	//If the position is a room tile, return room name.
@@ -540,6 +572,20 @@ public class Cluedo {
 	String str = "" + (char)(pos.getPosX()+65)+ "-" + pos.getPosY();
 
 	return str;
+    }
+
+    /**
+     * Returns the Room object given its name.
+     * @param name
+     * @return
+     */
+    public Room getRoom(String name) {
+	for (Room r : this.rooms) {
+	    if (r.getRoomName().equals(name)) {
+		return r;
+	    }
+	}
+	return null;
     }
 
 }
