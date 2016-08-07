@@ -153,7 +153,7 @@ public class Cluedo {
      */
     public void processMove(Player player, int roll) {
 
-	System.out.println(" ** " + player.getName() + " chose to Move and rolled a " + roll + "." + " ** ");
+	System.out.println(" ** " + player.getName() + " chose to Move and rolled a " + roll + "" + " ** ");
 	System.out.println();
 
 	Position startPosition = player.getPosition();
@@ -177,6 +177,7 @@ public class Cluedo {
 
 	//If player was on a walkable tile before moving, set it as unoccupied now that the player has moved.
 	if (this.gameBoard.getTile(startPosition) instanceof WalkableTile) {
+	    System.out.println("set " + this.posToCoordinates(startPosition) + " to false");
 	    this.gameBoard.getWalkableTile(startPosition).setOccupied(false);
 	}
 
@@ -198,23 +199,18 @@ public class Cluedo {
      */
     public Position getMove(Player p, int diceRoll) {
 
-
-	List<Position> possiblePositions = new ArrayList<>();
-
-	if (p.isInRoom()) {
-	    possiblePositions = getPossiblePositions(p.getPosition(), diceRoll);
-	} else {
-	    possiblePositions = getPossiblePositions(p.getPosition(), diceRoll);
-	}
-
-
+	List<Position> possiblePositions = this.getPossiblePositions(p.getPosition(), diceRoll);
 	assert (!possiblePositions.isEmpty()) : "No possible positions that the player can move to found!";
 
 	//sort list by x coordinate
 	Collections.sort(possiblePositions, new Comparator<Position>() {
 	    @Override
 	    public int compare(Position p1, Position p2) {
-		return p1.getPosX() - p2.getPosX();
+		if (p1.getPosX() - p2.getPosX() != 0) {
+		    return p1.getPosX() - p2.getPosX();
+		} else {
+		    return p1.getPosY() - p2.getPosY();
+		}
 	    }
 	});
 
@@ -271,7 +267,7 @@ public class Cluedo {
 	//Add all valid surrounding positions the the queue.
 	for (int i = 0; i < surroundingPositions.size(); i++) {
 	    Set<Position> visited = new HashSet<>(); 
-	    visited.add(position); //Add the starting position to the visited list.
+	    visited.add(position); //Add the starting position to the visited list. ///PROBLEM HERE??????????????????**********
 	    queue.add(new MoveInfo(surroundingPositions.get(i), diceRoll - 1, visited));
 	}
 
@@ -279,10 +275,10 @@ public class Cluedo {
 	    MoveInfo moveInfo = queue.poll();
 	    Position currentPosition = moveInfo.getPosition();
 
+
 	    if (!possiblePositions.contains(currentPosition)) {
 
 		if (this.gameBoard.isEntranceTile(currentPosition)) {
-
 		    RoomTile tile = (RoomTile)this.gameBoard.getTile(currentPosition);
 		    boolean found = false;
 
@@ -308,7 +304,7 @@ public class Cluedo {
 		    }
 
 
-		}  else if (moveInfo.getMovesLeft() == 0 && !moveInfo.getVisited().contains(currentPosition) && !this.gameBoard.getWalkableTile(currentPosition).isOccupied()){
+		}  else if ((moveInfo.getMovesLeft() == 0) && (!moveInfo.getVisited().contains(currentPosition)) && (!this.gameBoard.getWalkableTile(currentPosition).isOccupied())){
 		    possiblePositions.add(currentPosition);
 		}
 
@@ -320,13 +316,16 @@ public class Cluedo {
 
 		    //Add all of the valid surrounding positions to the queue.
 		    for (int i = 0; i < surroundingPositions.size(); i++) {
-			queue.add(new MoveInfo(surroundingPositions.get(i), moveInfo.getMovesLeft() - 1, moveInfo.getVisited()));
+
+			//Add position to queue if it hasnt already been visited********************** NEW ADDITION...
+			if (!moveInfo.getVisited().contains(surroundingPositions.get(i))) {
+			    queue.add(new MoveInfo(surroundingPositions.get(i), moveInfo.getMovesLeft() - 1, moveInfo.getVisited()));
+			}
+
 		    }
 		}
 	    }
-
 	}
-
 
 	List<Position> possiblePositionsList = new ArrayList<>();
 	possiblePositionsList.addAll(possiblePositions);
@@ -356,7 +355,7 @@ public class Cluedo {
 	}
 
 	//If its possible to move to the left, add to surroundingPositions.
-	if (posX - 1 > 0) {
+	if (posX - 1 >= 0) {
 	    Position possiblePosition = new Position(posX - 1, posY);
 
 	    if (this.gameBoard.isValidTile(possiblePosition)) {
@@ -375,7 +374,7 @@ public class Cluedo {
 	}
 
 	//If its possible to move up, add to surroundingPositions.
-	if (posY - 1 > 0) {
+	if (posY - 1 >= 0) {
 	    Position possiblePosition = new Position(posX, posY - 1);
 	    if (this.gameBoard.isValidTile(possiblePosition)) {
 		//System.out.println("Adding X: " + possiblePosition.getPosX() + " Y: " + possiblePosition.getPosY());
@@ -496,7 +495,7 @@ public class Cluedo {
      * Checks if the game is finished yet or not.
      */
     public boolean isGameOver() {
-	return (winner != null);
+	return (winner != null) || (this.eliminatedplayers.size() == this.players.size());
     }
 
     /**

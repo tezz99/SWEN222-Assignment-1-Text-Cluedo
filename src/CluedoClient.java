@@ -47,14 +47,20 @@ public class CluedoClient {
 		    break;
 		}
 
-		if (!game.getEliminatedPlayers().contains(p)) {System.out.println(this.divider);}
+		if (!game.getEliminatedPlayers().contains(p)){
+		    System.out.println(this.divider);
+		}
 	    }
 
 	}
-	System.out.println(this.divider);
 	System.out.println();
 	System.out.println("----------------------------------- *** GAMEOVER *** -----------------------------------");
-	System.out.println(game.getWinner().getName() + " WINS!");
+
+	if (game.getWinner() != null){
+	    System.out.println(game.getWinner().getName() + " WINS!");
+	} else {
+	    System.out.println("** NO ONE WINS! MURDERER GOT AWAY! **");
+	}
     }
 
 
