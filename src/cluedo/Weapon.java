@@ -7,6 +7,14 @@ public class Weapon {
 
     public Weapon (String name, Room room) {
 	this.name = name;
+	this.setRoom(room);
+    }
+
+    public Room getRoom() {
+	return room;
+    }
+
+    public void setRoom(Room room) {
 	this.room = room;
     }
 
@@ -15,7 +23,7 @@ public class Weapon {
      * @return
      */
     public String getName() {
-	return name;
+	return this.name;
     }
 
 }

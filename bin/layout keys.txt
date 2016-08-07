@@ -1,4 +1,0 @@
-1 = Wall
-0 = Blank tile
-R = Room Tile
-D = Door Tile/Entrance Tile

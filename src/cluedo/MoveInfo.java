@@ -1,17 +1,20 @@
 package cluedo;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MoveInfo {
     private int movesLeft;
     private Position position;
-    List<Position> visited;
+    Set<Position> visited;
 
 
-    public MoveInfo(Position position, int movesLeft, List<Position> visited) {
+    public MoveInfo(Position position, int movesLeft, Set<Position> visited) {
 	this.movesLeft = movesLeft;
 	this.position = position;
-	this.visited = visited;
+	this.visited = new HashSet<>();
+
+	this.visited.addAll(visited);
     }
 
     public int getMovesLeft() {
@@ -33,16 +36,8 @@ public class MoveInfo {
     /**
      * @return the visited
      */
-    public List<Position> getVisited() {
-	return visited;
+    public Set<Position> getVisited() {
+	return this.visited;
     }
-
-    /**
-     * @param visited the visited to set
-     */
-    public void setVisited(List<Position> visited) {
-	this.visited = visited;
-    }
-
 
 }

@@ -8,6 +8,8 @@ public class Room {
     private final String name;
     private List<Player> occupants = new ArrayList<>();
     private Room secretPassage = null;
+    private List<Position> entrances = new ArrayList<>();
+    private List<Position> exits = new ArrayList<>();
 
     private List<Weapon> weapons = new ArrayList<>();
 
@@ -23,7 +25,6 @@ public class Room {
     public boolean isOccupied() {
 	return !occupants.isEmpty();
     }
-
 
     /**
      * Sets the given player as an occupant of the room.
@@ -90,6 +91,30 @@ public class Room {
      */
     public void addWeapon(Weapon weapon) {
 	this.weapons.add(weapon);
+    }
+
+    /**
+     * Returns list of entrances to the room
+     * @return
+     */
+    public List<Position> getEntrances() {
+	return this.entrances;
+    }
+
+    /**
+     * Adds given entrance to the list of entrances to the room.
+     * @param entrances
+     */
+    public void addEntrance(Position e) {
+	this.entrances.add(e);
+    }
+
+    public List<Position> getExits() {
+	return exits;
+    }
+
+    public void addExit(Position exit) {
+	this.exits.add(exit);
     }
 
 }

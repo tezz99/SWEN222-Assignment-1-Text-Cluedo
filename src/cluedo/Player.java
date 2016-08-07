@@ -3,6 +3,7 @@ package cluedo;
 import java.util.ArrayList;
 import java.util.List;
 
+import Tiles.RoomTile;
 import cards.Card;
 
 /**
@@ -16,8 +17,9 @@ public class Player {
     List<Card> hand = new ArrayList<>();
     private Position currentPosition;
     private String name;
-    private Room currentRoom;
     private int token;
+    private Room currentRoom = null;
+    private RoomTile holderTile = null;
 
     public Player(String name) {
 	this.name = name;
@@ -50,14 +52,6 @@ public class Player {
 	return this.hand;
     }
 
-    /**
-     * Returns true if player is currently in a room.
-     * 
-     * @return
-     */
-    public boolean isInRoom() {
-	return this.currentRoom != null;
-    }
 
     // GETTERS AND SETTERS
     public Position getPosition() {
@@ -74,8 +68,24 @@ public class Player {
 
     public void setCurrentRoom(Room currentRoom) {
 	this.currentRoom = currentRoom;
-	System.out.println("Room Entered: " + currentRoom.getRoomName());
+    }
 
+    public RoomTile getHolderTile() {
+	return holderTile;
+    }
+
+    public void setHolderTile(RoomTile holderTile) {
+	this.holderTile = holderTile;
+    }
+
+
+    /**
+     * Returns true if player is currently in a room.
+     * 
+     * @return
+     */
+    public boolean isInRoom() {
+	return this.currentRoom != null;
     }
 
     public String getToken() {
@@ -86,9 +96,27 @@ public class Player {
 	this.token = i;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result
+		+ ((currentPosition == null) ? 0 : currentPosition.hashCode());
+	result = prime * result
+		+ ((currentRoom == null) ? 0 : currentRoom.hashCode());
+	result = prime * result + ((hand == null) ? 0 : hand.hashCode());
+	result = prime * result
+		+ ((holderTile == null) ? 0 : holderTile.hashCode());
+	result = prime * result + ((name == null) ? 0 : name.hashCode());
+	result = prime * result + token;
+	return result;
+    }
+
+    /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -124,6 +152,13 @@ public class Player {
 	} else if (!hand.equals(other.hand)) {
 	    return false;
 	}
+	if (holderTile == null) {
+	    if (other.holderTile != null) {
+		return false;
+	    }
+	} else if (!holderTile.equals(other.holderTile)) {
+	    return false;
+	}
 	if (name == null) {
 	    if (other.name != null) {
 		return false;
@@ -137,27 +172,10 @@ public class Player {
 	return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-	final int prime = 31;
-	int result = 1;
-	result = prime * result
-		+ ((currentPosition == null) ? 0 : currentPosition.hashCode());
-	result = prime * result
-		+ ((currentRoom == null) ? 0 : currentRoom.hashCode());
-	result = prime * result + ((hand == null) ? 0 : hand.hashCode());
-	result = prime * result + ((name == null) ? 0 : name.hashCode());
-	result = prime * result + token;
-	return result;
-    }
-
     @Override
     public String toString() {
 	return this.name;
     }
+
+
 }

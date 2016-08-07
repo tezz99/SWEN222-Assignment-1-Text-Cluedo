@@ -18,11 +18,12 @@ public class Board {
     private List<Player> players;
     private Tile[][] gameBoard;
     private Room[] rooms;
+    private Cluedo game;
 
     private final int[][] startingPositions = {{9,0}, {15,0}, {24,6}, {24,19}, {7, 24}, {0, 17}}; //Starting positions of characters starting from scarlett
 
-    public Board(List<Player> players, Room[] rooms) {
-
+    public Board(Cluedo game, List<Player> players, Room[] rooms) {
+	this.game = game;
 	this.players = players;
 	this.rooms = rooms;
 
@@ -51,9 +52,133 @@ public class Board {
 		    assert room.length() == 1;
 		    char c = room.charAt(0);
 
-		    if (c == 'R' || c == 'D') {
-			this.gameBoard[xPos][yPos] = new RoomTile();
-		    } else if (c == 'X') {
+		    if (c == 'K' || c == 'k' || c == '*') {
+			RoomTile roomTile = new RoomTile();
+
+			if (c == 'k' || c == '*') {
+			    roomTile.setInnerTile(true);
+			    if (c == '*') {
+				roomTile.setPlayerHolder(true);
+			    }
+			}
+			roomTile.setRoom(this.getRoom("Kitchen"));
+			roomTile.setRoomName("Kitchen");
+			roomTile.setPosition(new Position(xPos, yPos));
+			this.gameBoard[xPos][yPos] = roomTile;
+		    } 
+		    else if (c == 'B' || c == 'b' || c == '-') {
+			RoomTile roomTile = new RoomTile();
+
+			if (c == 'b' || c == '-') {
+			    roomTile.setInnerTile(true);
+			    if (c == '-') {
+				roomTile.setPlayerHolder(true);
+			    }
+			}
+			roomTile.setRoom(this.getRoom("Ball Room"));
+			roomTile.setRoomName("Ball Room");
+			roomTile.setPosition(new Position(xPos, yPos));
+			this.gameBoard[xPos][yPos] = roomTile;
+		    }
+		    else if (c == 'C' || c == 'c' || c == '.') {
+			RoomTile roomTile = new RoomTile();
+
+			if (c == 'c' || c == '.') {
+			    roomTile.setInnerTile(true);
+			    if (c == '.') {
+				roomTile.setPlayerHolder(true);
+			    }
+			}
+			roomTile.setRoom(this.getRoom("Conservatory"));
+			roomTile.setRoomName("Conservatory");
+			roomTile.setPosition(new Position(xPos, yPos));
+			this.gameBoard[xPos][yPos] = roomTile;
+		    }
+		    else if (c == 'I' || c == 'i' || c == ';') {
+			RoomTile roomTile = new RoomTile();
+
+			if (c == 'i' || c == ';') {
+			    roomTile.setInnerTile(true);
+			    if (c == ';') {
+				roomTile.setPlayerHolder(true);
+			    }
+			}
+			roomTile.setRoom(this.getRoom("Billiard Room"));
+			roomTile.setRoomName("Billiard Room");
+			roomTile.setPosition(new Position(xPos, yPos));
+			this.gameBoard[xPos][yPos] = roomTile;
+		    }
+		    else if (c == 'L' || c == 'l' || c == '^') {
+			RoomTile roomTile = new RoomTile();
+
+			if (c == 'l' || c == '^') {
+			    roomTile.setInnerTile(true);
+			    if (c == '^') {
+				roomTile.setPlayerHolder(true);
+			    }
+			}
+			roomTile.setRoom(this.getRoom("Library"));
+			roomTile.setRoomName("Library");
+			roomTile.setPosition(new Position(xPos, yPos));
+			this.gameBoard[xPos][yPos] = roomTile;
+		    }
+		    else if (c == 'S' || c == 's' || c == '#') {
+			RoomTile roomTile = new RoomTile();
+
+			if (c == 's' || c == '#') {
+			    roomTile.setInnerTile(true);
+			    if (c == '#') {
+				roomTile.setPlayerHolder(true);
+			    }
+			}
+			roomTile.setRoom(this.getRoom("Study"));
+			roomTile.setRoomName("Study");
+			roomTile.setPosition(new Position(xPos, yPos));
+			this.gameBoard[xPos][yPos] = roomTile;
+		    }
+		    else if (c == 'H' || c == 'h' || c == '@') {
+			RoomTile roomTile = new RoomTile();
+
+			if (c == 'h' || c == '@') {
+			    roomTile.setInnerTile(true);
+			    if (c == '@') {
+				roomTile.setPlayerHolder(true);
+			    }
+			}
+			roomTile.setRoom(this.getRoom("Hall"));
+			roomTile.setRoomName("Hall");
+			roomTile.setPosition(new Position(xPos, yPos));
+			this.gameBoard[xPos][yPos] = roomTile;
+		    }
+		    else if (c == 'L' || c == 'l' || c == '&') {
+			RoomTile roomTile = new RoomTile();
+
+			if (c == 'l' || c == '&') {
+			    roomTile.setInnerTile(true);
+			    if (c == '&') {
+				roomTile.setPlayerHolder(true);
+			    }
+			}
+			roomTile.setRoom(this.getRoom("Lounge"));
+			roomTile.setRoomName("Lounge");
+			roomTile.setPosition(new Position(xPos, yPos));
+			this.gameBoard[xPos][yPos] = roomTile;
+		    }
+		    else if (c == 'D' || c == 'd' || c == '%') {
+			RoomTile roomTile = new RoomTile();
+
+			if (c == 'd' || c == '%') {
+			    roomTile.setInnerTile(true);
+			    if (c == '%') {
+				roomTile.setPlayerHolder(true);
+			    }
+			}
+			roomTile.setRoom(this.getRoom("Dining Room"));
+			roomTile.setRoomName("Dining Room");
+			roomTile.setPosition(new Position(xPos, yPos));
+			this.gameBoard[xPos][yPos] = roomTile;
+		    }
+		    else if (c == 'X') {
 			this.gameBoard[xPos][yPos] = new SolutionTile();
 		    } else {
 			throw new Error("Error loading layout file...");
@@ -84,7 +209,6 @@ public class Board {
     public void displayBoard() {
 	System.out.println();
 
-
 	//Display the X coordinates at the top.
 	System.out.print("   ");
 	for(int i = 0; i < this.gameBoard.length; i++){
@@ -105,20 +229,49 @@ public class Board {
 		boolean tokenPrinted = false;
 
 		for (Player p : this.players) {
-		    if (p.getPosition().getPosX() == col && p.getPosition().getPosY() == row) {
+
+		    //If player is elimintated, do not display them.
+		    if (this.game.getEliminatedPlayers().contains(p)) {
+			continue;
+		    }
+
+		    if (this.gameBoard[col][row] instanceof RoomTile) {
+
+			RoomTile currentTile = (RoomTile)this.gameBoard[col][row];
+
+			if (currentTile.isPlayerHolder()) {
+
+			    if (currentTile.getRoom().hasOccupant(p) && p.getHolderTile() == null) {
+				p.setHolderTile(currentTile);
+				currentTile.setOccupied(true);
+				System.out.print("|" + p.getToken());
+				tokenPrinted = true;
+			    } else if (currentTile.getRoom().hasOccupant(p) && p.getHolderTile().equals(currentTile)) {
+				System.out.print("|" + p.getToken());
+				tokenPrinted = true;
+				break;
+			    }
+			}
+
+		    } else if (!game.getEliminatedPlayers().contains(p) && p.getPosition().getPosX() == col && p.getPosition().getPosY() == row) {
 			System.out.print("|" + p.getToken());
 			tokenPrinted = true;
+			break;
 		    }
 		}
+
 		if (!tokenPrinted) {
 		    System.out.print("|" + this.gameBoard[col][row].toString());
 		}
 
 	    }
-	    System.out.print("| " + row);
-	    System.out.println();
-	}
 
+	    System.out.print("| " + row);
+	    System.out.println();  
+	}
+	System.out.println(); 
+	System.out.println("Room Structure (Clockwise from top left):");
+	System.out.println("Kitchen, Ball Room, Conservatory, Billiard Room, Library, Study, Hall, Lounge, Dining Room");
 
     }
 
@@ -162,6 +315,8 @@ public class Board {
 
 	    Room room = this.getRoom("Kitchen");
 	    assert room != null;
+	    room.addExit(new Position(4,7));
+	    room.addEntrance(new Position(4,6));
 	    tile.setRoom(room);
 
 
@@ -178,6 +333,8 @@ public class Board {
 
 	    Room room = this.getRoom("Ball Room");
 	    assert room != null;
+	    room.addEntrance(new Position(8,5));
+	    room.addExit(new Position(7,5));
 	    tile.setRoom(room);
 
 	} else {
@@ -192,6 +349,8 @@ public class Board {
 
 	    Room room = this.getRoom("Ball Room");
 	    assert room != null;
+	    room.addEntrance(new Position(9,7));
+	    room.addExit(new Position(9, 8));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -205,6 +364,8 @@ public class Board {
 
 	    Room room = this.getRoom("Ball Room");
 	    assert room != null;
+	    room.addEntrance(new Position(15,7));
+	    room.addExit(new Position(15, 8));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -218,6 +379,8 @@ public class Board {
 
 	    Room room = this.getRoom("Ball Room");
 	    assert room != null;
+	    room.addEntrance(new Position(16,5));
+	    room.addExit(new Position(17,5));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -232,6 +395,8 @@ public class Board {
 
 	    Room room = this.getRoom("Conservatory");
 	    assert room != null;
+	    room.addEntrance(new Position(19,4));
+	    room.addExit(new Position(19,5));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -243,10 +408,12 @@ public class Board {
 	if (this.gameBoard[19][9] instanceof RoomTile) {
 	    RoomTile tile = ((RoomTile)this.gameBoard[19][9]);
 	    tile.setAsDoor();
-	    tile.setRoomName("Billard Room");
+	    tile.setRoomName("Billiard Room");
 
-	    Room room = this.getRoom("Billard Room");
+	    Room room = this.getRoom("Billiard Room");
 	    assert room != null;
+	    room.addEntrance(new Position(19,9));
+	    room.addExit(new Position(18,9));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -256,10 +423,12 @@ public class Board {
 	if (this.gameBoard[23][12] instanceof RoomTile) {
 	    RoomTile tile = ((RoomTile)this.gameBoard[23][12]);
 	    tile.setAsDoor();
-	    tile.setRoomName("Billard Room");
+	    tile.setRoomName("Billiard Room");
 
-	    Room room = this.getRoom("Billard Room");
+	    Room room = this.getRoom("Billiard Room");
 	    assert room != null;
+	    room.addEntrance(new Position(23,12));
+	    room.addExit(new Position(23, 13));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -274,6 +443,8 @@ public class Board {
 
 	    Room room = this.getRoom("Library");
 	    assert room != null;
+	    room.addEntrance(new Position(21,14));
+	    room.addExit(new Position(21,13));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -287,6 +458,8 @@ public class Board {
 
 	    Room room = this.getRoom("Library");
 	    assert room != null;
+	    room.addEntrance(new Position(18,16));
+	    room.addExit(new Position(17, 16));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -301,6 +474,8 @@ public class Board {
 
 	    Room room = this.getRoom("Study");
 	    assert room != null;
+	    room.addEntrance(new Position(18,21));
+	    room.addExit(new Position(18, 20));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -315,6 +490,8 @@ public class Board {
 
 	    Room room = this.getRoom("Hall");
 	    assert room != null;
+	    room.addEntrance(new Position(15,20));
+	    room.addExit(new Position(16,20));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -328,6 +505,8 @@ public class Board {
 
 	    Room room = this.getRoom("Hall");
 	    assert room != null;
+	    room.addEntrance(new Position(11,18));
+	    room.addExit(new Position(11, 17));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -340,6 +519,8 @@ public class Board {
 
 	    Room room = this.getRoom("Hall");
 	    assert room != null;
+	    room.addEntrance(new Position(12,18));
+	    room.addExit(new Position(12,17));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -352,6 +533,8 @@ public class Board {
 
 	    Room room = this.getRoom("Hall");
 	    assert room != null;
+	    room.addEntrance(new Position(13,18));
+	    room.addExit(new Position(13,17));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -365,6 +548,8 @@ public class Board {
 
 	    Room room = this.getRoom("Lounge");
 	    assert room != null;
+	    room.addEntrance(new Position(6,19));
+	    room.addExit(new Position(6,18));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -379,6 +564,8 @@ public class Board {
 
 	    Room room = this.getRoom("Dining Room");
 	    assert room != null;
+	    room.addEntrance(new Position(6,15));
+	    room.addExit(new Position(6, 16));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -392,42 +579,13 @@ public class Board {
 
 	    Room room = this.getRoom("Dining Room");
 	    assert room != null;
+	    room.addEntrance(new Position(7,12));
+	    room.addExit(new Position(8,18));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
 	}
     }
-
-    /**
-     * Returns if a given position is a walkable or a tile that is an entrance to a room.
-     * @param p
-     * @return
-     */
-    public boolean isWalkableTile(Position p) {
-	if (this.gameBoard[p.getPosX()][p.getPosY()] instanceof WalkableTile) {
-	    //System.out.println("Tested X: " + p.getPosX() + " and Y: " + p.getPosY() + " and returning true as its a walkable tile");
-	    return true;
-	}
-
-	return isEntranceTile(p);
-    }
-
-    /**
-     * Returns true if the tile position given is part of a room and an entrace to the room.
-     * @param p
-     * @return
-     */
-    public boolean isEntranceTile(Position p) {
-
-	if (this.gameBoard[p.getPosX()][p.getPosY()] instanceof RoomTile) {
-	    RoomTile tile = (RoomTile)this.gameBoard[p.getPosX()][p.getPosY()];
-	    //System.out.println("Tested X: " + p.getPosX() + " and Y: " + p.getPosY() + " and returning " + tile.isDoor());
-	    return tile.isDoor();
-	}
-
-	return false;
-    }
-
 
     /**
      * Returns the room given the position. If tile is not part of room, returns null.
@@ -455,6 +613,42 @@ public class Board {
 	return this.gameBoard[p.getPosX()][p.getPosY()];
     }
 
+    public boolean isRoomTile (Position p) {
+	return this.gameBoard[p.getPosX()][p.getPosY()] instanceof RoomTile;
+    }
+
+
+    /**
+     * Returns true if the tile position given is part of a room and an entrace to the room.
+     * @param p
+     * @return
+     */
+    public boolean isEntranceTile(Position p) {
+
+	if (this.gameBoard[p.getPosX()][p.getPosY()] instanceof RoomTile) {
+	    RoomTile tile = (RoomTile)this.gameBoard[p.getPosX()][p.getPosY()];
+	    //System.out.println("Tested X: " + p.getPosX() + " and Y: " + p.getPosY() + " and returning " + tile.isDoor());
+	    return tile.isDoor();
+	}
+
+	return false;
+    }
+
+    /**
+     * Returns if a given position is a walkable or a tile that is an entrance to a room.
+     * @param p
+     * @return
+     */
+    public boolean isValidTile(Position p) {
+	if (this.gameBoard[p.getPosX()][p.getPosY()] instanceof WalkableTile) {
+	    //System.out.println("Tested X: " + p.getPosX() + " and Y: " + p.getPosY() + " and returning true as its a walkable tile");
+	    return true;
+	}
+
+	return isEntranceTile(p);
+    }
+
+
     /**
      * Returns the walkable tile at given position.
      * @param p
@@ -469,6 +663,10 @@ public class Board {
 	}
 
 	throw new Error("Position given is not a walkable tile");
+    }
+
+    public boolean isWalkableTile(Position p) {
+	return this.gameBoard[p.getPosX()][p.getPosY()] instanceof WalkableTile;
     }
 
 }
