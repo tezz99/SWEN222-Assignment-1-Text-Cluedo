@@ -1,4 +1,4 @@
-package Tiles;
+package tiles;
 
 import cluedo.Position;
 import cluedo.Room;

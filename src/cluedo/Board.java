@@ -5,11 +5,11 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 
-import Tiles.RoomTile;
-import Tiles.SolutionTile;
-import Tiles.Tile;
-import Tiles.WalkableTile;
-import Tiles.WallTile;
+import tiles.RoomTile;
+import tiles.SolutionTile;
+import tiles.Tile;
+import tiles.WalkableTile;
+import tiles.WallTile;
 
 public class Board {
 

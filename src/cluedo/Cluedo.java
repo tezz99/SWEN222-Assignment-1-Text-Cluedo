@@ -12,13 +12,13 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
-import Tiles.RoomTile;
-import Tiles.WalkableTile;
 import cards.Card;
 import cards.CharacterCard;
 import cards.Deck;
 import cards.RoomCard;
 import cards.WeaponCard;
+import tiles.RoomTile;
+import tiles.WalkableTile;
 
 /**
  * Represents a game of cluedo.

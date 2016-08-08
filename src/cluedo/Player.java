@@ -3,8 +3,8 @@ package cluedo;
 import java.util.ArrayList;
 import java.util.List;
 
-import Tiles.RoomTile;
 import cards.Card;
+import tiles.RoomTile;
 
 /**
  * Represents a player in the game.
