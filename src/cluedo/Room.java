@@ -93,6 +93,10 @@ public class Room {
 	this.weapons.add(weapon);
     }
 
+    public void removeWeapon(Weapon weapon) {
+	this.weapons.remove(weapon);
+    }
+
     /**
      * Returns list of entrances to the room
      * @return

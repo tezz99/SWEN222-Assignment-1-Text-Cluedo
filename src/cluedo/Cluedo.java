@@ -445,9 +445,27 @@ public class Cluedo {
 	System.out.println("You chose the following MURDER WEAPON: " + this.weaponNames[weaponChoiceNum]);
 	System.out.println();
 
+	this.moveWeapon(weaponChoice, roomChoice); //Move the wepon being suggested to this room.
+	//this.movePlayer(characterChoice, roomChoice); //Move the player being suggested to this room.
 
-	//Move weapons according to suggestion?
+	//boolean suggestionCorrect = this.checkSuggestion(new Triple(characterChoice, weaponChoice, roomChoice));//check suggestion
+	/*
+	if (suggestionCorrect) {
+	    System.out.println("Suggestion was correct. Would you like to make an accusation?"); // ***MOVETBHIS TO check suggestion!!
+	    //Suggeestion was correct, provide options.
+	    System.out.println("1. Yes");
+	    System.out.println("2. No");
+
+	    int choice = this.getPlayerChoice(2);
+
+	    //If player wants to make a suggestion, process it.
+	    if (choice == 0) {
+		this.processAccusation(p);
+	    } 
+	} 
+	 */
     }
+
 
 
     /**
@@ -541,7 +559,22 @@ public class Cluedo {
      * Moves given weapon to the given room.
      */
     public void moveWeapon(Weapon weapon, Room room) {
-	throw new Error("temporary error. fix this method.....");
+
+	//Weapon is already in the room so dont need to do anything.
+	if (weapon.getRoom().equals(room)) {
+	    System.out.println("Weapon already in the room.");
+	    return;
+	}
+
+	//Remove from current room.
+	weapon.getRoom().removeWeapon(weapon);
+
+	//set new room of weapon
+	weapon.setRoom(room);
+
+	//Add weapon to the new room.
+	room.addWeapon(weapon);
+
     }
 
 
