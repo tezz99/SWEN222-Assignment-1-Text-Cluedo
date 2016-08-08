@@ -129,7 +129,6 @@ public class RoomTile implements Tile{
 	result = prime * result + (innerTile ? 1231 : 1237);
 	result = prime * result + (isDoor ? 1231 : 1237);
 	result = prime * result + (isPlayerHolder ? 1231 : 1237);
-	result = prime * result + (occupied ? 1231 : 1237);
 	result = prime * result
 		+ ((position == null) ? 0 : position.hashCode());
 	result = prime * result + ((room == null) ? 0 : room.hashCode());
@@ -160,9 +159,6 @@ public class RoomTile implements Tile{
 	    return false;
 	}
 	if (isPlayerHolder != other.isPlayerHolder) {
-	    return false;
-	}
-	if (occupied != other.occupied) {
 	    return false;
 	}
 	if (position == null) {
@@ -201,7 +197,4 @@ public class RoomTile implements Tile{
 
 	return "R";
     }
-
-
-
 }

@@ -239,13 +239,13 @@ public class Board {
 			RoomTile currentTile = (RoomTile)this.gameBoard[col][row];
 
 			if (currentTile.isPlayerHolder()) {
-			    if (currentTile.getRoom().hasOccupant(p) && p.getHolderTile() == null) {
+			    if (currentTile.getRoom().hasOccupant(p) && p.getHolderTile() == null && !currentTile.isOccupied()) {
 				p.setHolderTile(currentTile);
 				currentTile.setOccupied(true);
 				System.out.print("|" + p.getToken());
 				tokenPrinted = true;
 				break;
-			    } else if (currentTile.getRoom().hasOccupant(p) && p.getHolderTile().equals(currentTile)) {
+			    } else if (p.getHolderTile() != null && currentTile.getRoom().hasOccupant(p) && p.getHolderTile().equals(currentTile)) {
 				System.out.print("|" + p.getToken());
 				tokenPrinted = true;
 				break;

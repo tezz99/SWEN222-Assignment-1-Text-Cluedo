@@ -39,7 +39,78 @@ public class Room {
      * @return
      */
     public void removeOccupant(Player p) {
-	this.occupants.remove(p);
+
+	int pos = -1;
+
+	for (int i = 0; i < this.occupants.size(); i++) {
+	    if (this.occupants.get(i).getName().equals(p.getName())) {
+		pos = i;
+	    }
+	}
+
+	this.occupants.remove(pos);
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result
+		+ ((entrances == null) ? 0 : entrances.hashCode());
+	result = prime * result + ((exits == null) ? 0 : exits.hashCode());
+	result = prime * result + ((name == null) ? 0 : name.hashCode());
+	result = prime * result
+		+ ((secretPassage == null) ? 0 : secretPassage.hashCode());
+	return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+	if (this == obj) {
+	    return true;
+	}
+	if (obj == null) {
+	    return false;
+	}
+	if (!(obj instanceof Room)) {
+	    return false;
+	}
+	Room other = (Room) obj;
+	if (entrances == null) {
+	    if (other.entrances != null) {
+		return false;
+	    }
+	} else if (!entrances.equals(other.entrances)) {
+	    return false;
+	}
+	if (exits == null) {
+	    if (other.exits != null) {
+		return false;
+	    }
+	} else if (!exits.equals(other.exits)) {
+	    return false;
+	}
+	if (name == null) {
+	    if (other.name != null) {
+		return false;
+	    }
+	} else if (!name.equals(other.name)) {
+	    return false;
+	}
+	if (secretPassage == null) {
+	    if (other.secretPassage != null) {
+		return false;
+	    }
+	} else if (!secretPassage.equals(other.secretPassage)) {
+	    return false;
+	}
+	return true;
     }
 
     /**
@@ -47,7 +118,13 @@ public class Room {
      * @return true if the room has the given occupant.
      */
     public boolean hasOccupant(Player p) {
-	return this.occupants.contains(p);
+	for (int i = 0; i < this.occupants.size(); i++) {
+	    if (this.occupants.get(i).getName().equals(p.getName())) {
+		return true;
+	    }
+	}
+
+	return false;
     }
 
     /**

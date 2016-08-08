@@ -175,8 +175,10 @@ public class Cluedo {
 
 	//If player has left a room, set their room.
 	if (this.gameBoard.isRoomTile(startPosition)) {
-	    player.getCurrentRoom().removeOccupant(player);
+	    RoomTile currentTile = (RoomTile)this.gameBoard.getTile(startPosition);
+	    currentTile.setOccupied(false);
 	    player.setHolderTile(null);
+	    player.getCurrentRoom().removeOccupant(player);
 	    player.setCurrentRoom(null);
 	}
 
@@ -189,7 +191,7 @@ public class Cluedo {
 
 	//If player was on a walkable tile before moving, set it as unoccupied now that the player has moved.
 	if (this.gameBoard.getTile(startPosition) instanceof WalkableTile) {
-	    System.out.println("set " + this.posToCoordinates(startPosition) + " to false");
+	    //System.out.println("set " + this.posToCoordinates(startPosition) + " to false");
 	    this.gameBoard.getWalkableTile(startPosition).setOccupied(false);
 	}
 
@@ -465,7 +467,7 @@ public class Cluedo {
 	boolean suggestionCorrect = this.checkSuggestion(p.getName(), characterChoice, weaponChoice, roomChoice);//check suggestion
 
 	if (suggestionCorrect) {
-	    System.out.println("No one has any of the Suggestion cards. Would you like to make an accusation?"); 
+	    System.out.println("Your suggestion was not refuted. Would you like to make an accusation?"); 
 
 	    //Suggeestion was correct, provide options.
 	    System.out.println("1. Yes");
@@ -494,15 +496,15 @@ public class Cluedo {
 	//Check if any of the suggested items are in the public cards.
 	for (int i = 0; i < this.publicCards.size(); i++) {
 	    if (this.publicCards.get(i).getName().equals(characterChoice.getName())) {
-		System.out.println("Suggestion Incorrect: " + characterChoice.getName() + " is a public card.");
+		System.out.println("Suggestion Refuted: " + characterChoice.getName() + " is a public card.");
 		return false;
 	    }
 	    if (this.publicCards.get(i).getName().equals(weaponChoice.getName())){
-		System.out.println("Suggestion Incorrect: " + weaponChoice.getName() + " is a public card.");
+		System.out.println("Suggestion Refuted: " + weaponChoice.getName() + " is a public card.");
 		return false;
 	    }
 	    if (this.publicCards.get(i).getName().equals(roomChoice.getRoomName())){
-		System.out.println("Suggestion Incorrect: " + roomChoice.getRoomName() + " is a public card.");
+		System.out.println("Suggestion Refuted: " + roomChoice.getRoomName() + " is a public card.");
 		return false;
 	    }
 	}
@@ -522,17 +524,17 @@ public class Cluedo {
 	    List<Card> playerHand = this.players.get(i).getHand();
 
 	    if (playerHand.contains(new CharacterCard(characterChoice.getName()))) {
-		System.out.println("Suggestion Incorrect: " + this.players.get(i).getName() + " has a " + characterChoice.getName() + " card on hand.");
+		System.out.println("Suggestion Refuted: " + this.players.get(i).getName() + " has a " + characterChoice.getName() + " card on hand.");
 		return false;
 	    }
 
 	    if (playerHand.contains(new WeaponCard(weaponChoice.getName()))) {
-		System.out.println("Suggestion Incorrect: " + this.players.get(i).getName() + " has a " + weaponChoice.getName() + " card on hand.");
+		System.out.println("Suggestion Refuted: " + this.players.get(i).getName() + " has a " + weaponChoice.getName() + " card on hand.");
 		return false;
 	    }
 
 	    if (playerHand.contains(new RoomCard (roomChoice.getRoomName()))) {
-		System.out.println("Suggestion Incorrect: " + this.players.get(i).getName() + " has a " + roomChoice.getRoomName() + " card on hand.");
+		System.out.println("Suggestion Refuted: " + this.players.get(i).getName() + " has a " + roomChoice.getRoomName() + " card on hand.");
 		return false;
 	    }
 	}
@@ -541,24 +543,23 @@ public class Cluedo {
 	    List<Card> playerHand = this.players.get(i).getHand();
 
 	    if (playerHand.contains(new CharacterCard(characterChoice.getName()))) {
-		System.out.println("Suggestion Incorrect: " + this.players.get(i).getName() + " has a " + characterChoice.getName() + " card on hand.");
+		System.out.println("Suggestion Refuted: " + this.players.get(i).getName() + " has a " + characterChoice.getName() + " card on hand.");
 		return false;
 	    }
 
 	    if (playerHand.contains(new WeaponCard(weaponChoice.getName()))) {
-		System.out.println("Suggestion Incorrect: " + this.players.get(i).getName() + " has a " + weaponChoice.getName() + " card on hand.");
+		System.out.println("Suggestion Refuted: " + this.players.get(i).getName() + " has a " + weaponChoice.getName() + " card on hand.");
 		return false;
 	    }
 
 	    if (playerHand.contains(new RoomCard (roomChoice.getRoomName()))) {
-		System.out.println("Suggestion Incorrect: " + this.players.get(i).getName() + " has a " + roomChoice.getRoomName() + " card on hand.");
+		System.out.println("Suggestion Refuted: " + this.players.get(i).getName() + " has a " + roomChoice.getRoomName() + " card on hand.");
 		return false;
 	    }
 	}
 
 	return true; //No one has any of the suggested cards, so accusation is correct.
     }
-
 
 
     /**
@@ -582,19 +583,21 @@ public class Cluedo {
 	    return;
 	}
 
-	characterChoice.setPosition(moveTo); //Set the new position of the player
-
 	//If player has left a room, set their room.
 	if (this.gameBoard.isRoomTile(startPosition)) {
-	    characterChoice.getCurrentRoom().removeOccupant(characterChoice);
+	    RoomTile currentTile = (RoomTile)this.gameBoard.getTile(startPosition);
+	    currentTile.setOccupied(false);
 	    characterChoice.setHolderTile(null);
+	    characterChoice.getCurrentRoom().removeOccupant(characterChoice);
 	    characterChoice.setCurrentRoom(null);
 	}
+
+	characterChoice.setPosition(moveTo); //Set the new position of the player
 
 	//If player has entered a room, set their room and add the player as a new occupant.
 	if (this.gameBoard.isRoomTile(moveTo)) {
 	    characterChoice.setCurrentRoom(this.gameBoard.getRoom(moveTo));
-	    characterChoice.getCurrentRoom().addOccupant(characterChoice);
+	    characterChoice.getCurrentRoom().addOccupant(characterChoice);    
 	}
 
 
@@ -702,7 +705,7 @@ public class Cluedo {
     public void moveWeapon(Weapon weapon, Room room) {
 
 	//Weapon is already in the room so dont need to do anything.
-	if (weapon.getRoom().equals(room)) {
+	if (weapon.getRoom().getRoomName().equals(room.getRoomName())) {
 	    return;
 	}
 
@@ -821,6 +824,7 @@ public class Cluedo {
 
     //Returns the player given their name.
     public Player getPlayer (String name){
+
 	for (Player p : this.players) {
 	    if (p.getName().equals(name)) {
 		return p;

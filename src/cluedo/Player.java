@@ -89,7 +89,7 @@ public class Player {
     }
 
     public Room getCurrentRoom() {
-	return currentRoom;
+	return this.currentRoom;
     }
 
     public void setCurrentRoom(Room currentRoom) {
@@ -120,13 +120,6 @@ public class Player {
     public int hashCode() {
 	final int prime = 31;
 	int result = 1;
-	result = prime * result
-		+ ((currentPosition == null) ? 0 : currentPosition.hashCode());
-	result = prime * result
-		+ ((currentRoom == null) ? 0 : currentRoom.hashCode());
-	result = prime * result + ((hand == null) ? 0 : hand.hashCode());
-	result = prime * result
-		+ ((holderTile == null) ? 0 : holderTile.hashCode());
 	result = prime * result + ((name == null) ? 0 : name.hashCode());
 	result = prime * result + token;
 	return result;
@@ -147,34 +140,6 @@ public class Player {
 	    return false;
 	}
 	Player other = (Player) obj;
-	if (currentPosition == null) {
-	    if (other.currentPosition != null) {
-		return false;
-	    }
-	} else if (!currentPosition.equals(other.currentPosition)) {
-	    return false;
-	}
-	if (currentRoom == null) {
-	    if (other.currentRoom != null) {
-		return false;
-	    }
-	} else if (!currentRoom.equals(other.currentRoom)) {
-	    return false;
-	}
-	if (hand == null) {
-	    if (other.hand != null) {
-		return false;
-	    }
-	} else if (!hand.equals(other.hand)) {
-	    return false;
-	}
-	if (holderTile == null) {
-	    if (other.holderTile != null) {
-		return false;
-	    }
-	} else if (!holderTile.equals(other.holderTile)) {
-	    return false;
-	}
 	if (name == null) {
 	    if (other.name != null) {
 		return false;
