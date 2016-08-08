@@ -10,7 +10,7 @@ public class Position {
 	this.setPosY(posY);
     }
 
-    // Getters and setters
+    /* GETTERS AND SETTERS */
     public int getPosX() {
 	return posX;
     }

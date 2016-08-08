@@ -7,7 +7,7 @@ import cards.WeaponCard;
 
 /**
  * A triple holds one of each of the three different types of cards in a game of cluedo. 
- * Used to represent a guess/suggetion, accusation and envelope.
+ * Used to represent a the items in the solution envelope.
  * @author tezz9
  *
  */

@@ -20,6 +20,7 @@ public class Player {
     private int token;
     private Room currentRoom = null;
     private RoomTile holderTile = null;
+    private boolean wasTransferred = false;
 
     public Player(String name) {
 	this.name = name;
@@ -52,8 +53,33 @@ public class Player {
 	return this.hand;
     }
 
+    /**
+     * Returns true if player is currently in a room.
+     * 
+     * @return
+     */
+    public boolean isInRoom() {
+	return this.currentRoom != null;
+    }
 
-    // GETTERS AND SETTERS
+    /**
+     * 
+     * @return true if this player was transferred during a someone elses suggestion.
+     */
+    public boolean wasTransferred() {
+	return this.wasTransferred;
+    }
+
+    /**
+     * Set if the player was transferred during someones suggestion.
+     * @param wasTransferred
+     */
+    public void setWasTransferred(boolean wasTransferred) {
+	this.wasTransferred = wasTransferred;
+    }
+
+
+    /* GETTERS AND SETTERS */
     public Position getPosition() {
 	return this.currentPosition;
     }
@@ -76,16 +102,6 @@ public class Player {
 
     public void setHolderTile(RoomTile holderTile) {
 	this.holderTile = holderTile;
-    }
-
-
-    /**
-     * Returns true if player is currently in a room.
-     * 
-     * @return
-     */
-    public boolean isInRoom() {
-	return this.currentRoom != null;
     }
 
     public String getToken() {

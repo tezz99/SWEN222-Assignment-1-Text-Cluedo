@@ -7,11 +7,14 @@ public class RoomTile implements Tile{
 
     private String roomName;
     private Room room; //Link to the room.
-    private boolean isDoor = false;
-    private boolean innerTile = false;;
-    private boolean isPlayerHolder = false;
-    private boolean occupied = false;
+    private boolean isDoor = false; 
+    private boolean innerTile = false; //Tile that is blank when printed on console.
+    private boolean isPlayerHolder = false; //tile that holds a player inside the room.
+    private boolean occupied = false; //If the holder tile is occupied by a player.
     private Position position;
+
+
+    /** GETTERS AND SETTERS **/
 
     /**
      * Returns room name.
@@ -19,6 +22,13 @@ public class RoomTile implements Tile{
      */
     public String getRoomName() {
 	return this.roomName;
+    }
+
+    /**
+     * Sets given name as the room's name.
+     */
+    public void setRoomName(String name) {
+	this.roomName = name;
     }
 
     /**
@@ -47,43 +57,64 @@ public class RoomTile implements Tile{
     }
 
     /**
-     * Sets given name as the room's name.
-     */
-    public void setRoomName(String name) {
-	this.roomName = name;
-    }
-
-    /**
      * Sets this tile as a door/entry to the room.
      */
     public void setAsDoor() {
 	this.isDoor = true;
     }
 
+    /**
+     * Returns if this tile is an inner tile.
+     * @return
+     */
     public boolean isinnerTile() {
 	return this.innerTile;
     }
 
+    /**
+     * Sets innertile depending on parameter given.
+     * @param isClear
+     */
     public void setInnerTile(boolean isClear) {
 	this.innerTile = isClear;
     }
 
+    /**
+     * Returns if this tile is a player holder.
+     * @return
+     */
     public boolean isPlayerHolder() {
 	return this.isPlayerHolder;
     }
 
+    /**
+     * Sets this tile as a player holder (or not).
+     * @param holder
+     */
     public void setPlayerHolder(boolean holder) {
 	this.isPlayerHolder = holder;
     }
 
+    /**
+     * Returns true if this tile is occupied.
+     * @return
+     */
     public boolean isOccupied() {
 	return occupied;
     }
 
+    /**
+     * Sets this tile as occupied (or not).
+     * @param occupied
+     */
     public void setOccupied(boolean occupied) {
 	this.occupied = occupied;
     }
 
+    /**
+     * Set the position of this tile.
+     * @param pos
+     */
     public void setPosition(Position pos) {
 	this.position = pos;
     }

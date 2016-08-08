@@ -7,7 +7,7 @@ import java.util.Random;
 import cluedo.Player;
 
 /**
- * Represents a deck of cards (weapon, 
+ * Represents a deck of cards.
  * @author tezz9
  *
  */

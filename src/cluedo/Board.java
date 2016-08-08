@@ -15,12 +15,12 @@ public class Board {
 
     public final int width = 25;
     public final int height = 25;
-    private List<Player> players;
-    private Tile[][] gameBoard;
-    private Room[] rooms;
     private Cluedo game;
+    private List<Player> players;
+    private Room[] rooms;
+    private Tile[][] gameBoard;
 
-    private final int[][] startingPositions = {{9,0}, {15,0}, {24,6}, {24,19}, {7, 24}, {0, 17}}; //Starting positions of characters starting from scarlett
+    private final int[][] startingPositions = {{9,0}, {15,0}, {24,6}, {24,19}, {7, 24}, {0, 17}}; //Starting positions of characters, starting from scarlett
 
     public Board(Cluedo game, List<Player> players, Room[] rooms) {
 	this.game = game;
@@ -31,6 +31,7 @@ public class Board {
 
 	//read the layout.txt file into the board array 
 	try {
+	    @SuppressWarnings("resource")
 	    Scanner scan = new Scanner(new File("src/layout.txt"));
 	    int xPos = 0;
 	    int yPos = 0;
@@ -195,7 +196,6 @@ public class Board {
 
 	    this.setStartPositions(); //set each players starting positions in player objects.
 	    this.setDoorTiles(); //Mark certain room tiles as entrances/doors into a particular room.
-	    scan.close();
 
 	} catch (FileNotFoundException e) {
 	    e.printStackTrace();
@@ -217,7 +217,7 @@ public class Board {
 	System.out.println();
 
 
-	//Print array.
+	//Print the board.
 	for (int row = 0; row < 25; row++) {
 	    int y = row + 1;
 
@@ -229,23 +229,22 @@ public class Board {
 		boolean tokenPrinted = false;
 
 		for (Player p : this.players) {
-
 		    //If player is elimintated, do not display them.
 		    if (this.game.getEliminatedPlayers().contains(p)) {
 			continue;
 		    }
 
+		    //If this room tile has a player on it then display it.
 		    if (this.gameBoard[col][row] instanceof RoomTile) {
-
 			RoomTile currentTile = (RoomTile)this.gameBoard[col][row];
 
 			if (currentTile.isPlayerHolder()) {
-
 			    if (currentTile.getRoom().hasOccupant(p) && p.getHolderTile() == null) {
 				p.setHolderTile(currentTile);
 				currentTile.setOccupied(true);
 				System.out.print("|" + p.getToken());
 				tokenPrinted = true;
+				break;
 			    } else if (currentTile.getRoom().hasOccupant(p) && p.getHolderTile().equals(currentTile)) {
 				System.out.print("|" + p.getToken());
 				tokenPrinted = true;
@@ -253,6 +252,7 @@ public class Board {
 			    }
 			}
 
+			//If player is on this walkable tile...
 		    } else if (!game.getEliminatedPlayers().contains(p) && p.getPosition().getPosX() == col && p.getPosition().getPosY() == row) {
 			System.out.print("|" + p.getToken());
 			tokenPrinted = true;
@@ -263,7 +263,6 @@ public class Board {
 		if (!tokenPrinted) {
 		    System.out.print("|" + this.gameBoard[col][row].toString());
 		}
-
 	    }
 
 	    System.out.print("| " + row);
@@ -272,23 +271,8 @@ public class Board {
 	System.out.println(); 
 	System.out.println("Room Structure (Clockwise from top left):");
 	System.out.println("Kitchen, Ball Room, Conservatory, Billiard Room, Library, Study, Hall, Lounge, Dining Room");
-
     }
 
-
-    /**
-     * Returns the Room object given its name.
-     * @param name
-     * @return
-     */
-    public Room getRoom(String name) {
-	for (Room r : this.rooms) {
-	    if (r.getRoomName().equals(name)) {
-		return r;
-	    }
-	}
-	return null;
-    }
 
     /**
      * Sets the starting positions of all players playing.
@@ -587,6 +571,21 @@ public class Board {
 	}
     }
 
+
+    /**
+     * Returns the Room object given its name.
+     * @param name
+     * @return
+     */
+    public Room getRoom(String name) {
+	for (Room r : this.rooms) {
+	    if (r.getRoomName().equals(name)) {
+		return r;
+	    }
+	}
+	return null;
+    }
+
     /**
      * Returns the room given the position. If tile is not part of room, returns null.
      * @param p
@@ -617,6 +616,20 @@ public class Board {
 	return this.gameBoard[p.getPosX()][p.getPosY()] instanceof RoomTile;
     }
 
+    /**
+     * Returns if a given position is a walkable or a tile that is an entrance to a room.
+     * @param p
+     * @return
+     */
+    public boolean isValidTile(Position p) {
+	if (this.gameBoard[p.getPosX()][p.getPosY()] instanceof WalkableTile) {
+	    //System.out.println("Tested X: " + p.getPosX() + " and Y: " + p.getPosY() + " and returning true as its a walkable tile");
+	    return true;
+	}
+
+	return isEntranceTile(p);
+    }
+
 
     /**
      * Returns true if the tile position given is part of a room and an entrace to the room.
@@ -635,21 +648,6 @@ public class Board {
     }
 
     /**
-     * Returns if a given position is a walkable or a tile that is an entrance to a room.
-     * @param p
-     * @return
-     */
-    public boolean isValidTile(Position p) {
-	if (this.gameBoard[p.getPosX()][p.getPosY()] instanceof WalkableTile) {
-	    //System.out.println("Tested X: " + p.getPosX() + " and Y: " + p.getPosY() + " and returning true as its a walkable tile");
-	    return true;
-	}
-
-	return isEntranceTile(p);
-    }
-
-
-    /**
      * Returns the walkable tile at given position.
      * @param p
      * @return
@@ -665,6 +663,11 @@ public class Board {
 	throw new Error("Position given is not a walkable tile");
     }
 
+    /**
+     * 
+     * @param p position of potential walkable tile.
+     * @return true if position given is a walkable tile on the game board.
+     */
     public boolean isWalkableTile(Position p) {
 	return this.gameBoard[p.getPosX()][p.getPosY()] instanceof WalkableTile;
     }

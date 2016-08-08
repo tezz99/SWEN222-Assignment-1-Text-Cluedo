@@ -38,6 +38,8 @@ public class CluedoClient {
 
 		    if (selectedOption.equals("Move")) {
 			game.processMove(p, dice.roll()); //Player has chosen to move.
+		    } else if (selectedOption.equals("Suggest")) {
+			game.processSuggestion(p); //Player has chosen to make a suggestion.
 		    } else if (selectedOption.equals("Accuse")) {
 			game.processAccusation(p); //Process the accusation. Ask for accusation and check if correct.
 		    }
@@ -53,6 +55,7 @@ public class CluedoClient {
 	    }
 
 	}
+
 	System.out.println();
 	System.out.println("----------------------------------- *** GAMEOVER *** -----------------------------------");
 
@@ -71,6 +74,7 @@ public class CluedoClient {
      */
     public int getNumberOfPlayers() {
 
+	@SuppressWarnings("resource")
 	Scanner scan = new Scanner(System.in);
 	int players = 0;
 

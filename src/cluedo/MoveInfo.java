@@ -3,6 +3,11 @@ package cluedo;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Used for the path finding implementation. Represents an ongoing move...
+ * @author tezz9
+ *
+ */
 public class MoveInfo {
     private int movesLeft;
     private Position position;
@@ -17,6 +22,8 @@ public class MoveInfo {
 	this.visited.addAll(visited);
     }
 
+
+    /* Getters and Setters */
     public int getMovesLeft() {
 	return movesLeft;
     }
