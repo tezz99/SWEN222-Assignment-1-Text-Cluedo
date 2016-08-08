@@ -37,7 +37,7 @@ public class CluedoClient {
 		    String selectedOption = game.offerOptions(p); //Ask the player what they want to do and store their choice.
 
 		    if (selectedOption.equals("Move")) {
-			game.processMove(p, 6); //Player has chosen to move.
+			game.processMove(p, dice.roll()); //Player has chosen to move.
 		    } else if (selectedOption.equals("Accuse")) {
 			game.processAccusation(p); //Process the accusation. Ask for accusation and check if correct.
 		    }

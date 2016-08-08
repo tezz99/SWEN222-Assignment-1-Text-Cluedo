@@ -38,6 +38,7 @@ public class Cluedo {
     private List<Player> eliminatedplayers = new ArrayList<>();
     private List<Card> publicCards;
     private Room rooms[] = new Room[9];
+    private Weapon weapons[] = new Weapon[6];
     private Player winner;
 
     private int numberOfPlayers;
@@ -158,6 +159,12 @@ public class Cluedo {
 
 	Position startPosition = player.getPosition();
 	Position moveTo = this.getMove(player, roll); //Get the position the player would like to move to.
+
+	//Player cannot move so return.
+	if (moveTo == null) {
+	    return; 
+	}
+
 	player.setPosition(moveTo); //Set the new position of the player
 
 
@@ -200,7 +207,21 @@ public class Cluedo {
     public Position getMove(Player p, int diceRoll) {
 
 	List<Position> possiblePositions = this.getPossiblePositions(p.getPosition(), diceRoll);
-	assert (!possiblePositions.isEmpty()) : "No possible positions that the player can move to found!";
+
+	if (possiblePositions.isEmpty()) {
+	    System.out.println(p.getName() + " is stuck. No moves avaliable. You can forefeit your turn or make an accusation:");
+
+	    System.out.println("1. Forefeit Turn");
+	    System.out.println("2. Make an accusation");
+
+	    int choice = this.getPlayerChoice(2);
+
+	    if (choice == 1) {
+		this.processAccusation(p);
+	    } 
+
+	    return null; //Player chose to forefiet turn.
+	}
 
 	//sort list by x coordinate
 	Collections.sort(possiblePositions, new Comparator<Position>() {
@@ -393,6 +414,38 @@ public class Cluedo {
     public void processSuggestion(Player p) {
 	System.out.println(p.getName() + " chose to make a suggestion.");
 
+	//Room choice. PRE-DECIDED.
+	Room roomChoice = p.getCurrentRoom();
+	System.out.println("Suggeting Room: " + p.getCurrentRoom().getRoomName());
+
+
+	//Choose character to accuse.
+	System.out.println("Select the CHARACTER (Murderer) from the options below:");
+	for (int i = 0; i < this.characterNames.length; i++) {
+	    int optionNum = i + 1;
+	    System.out.println(optionNum + ". " + this.characterNames[i]);
+	}
+	int characterChoiceNum = getPlayerChoice(this.characterNames.length); //Get the choice from the user/player
+	Player characterChoice = this.getPlayer(this.characterNames[characterChoiceNum]);
+	System.out.println();
+	System.out.println("You chose the following character as the murderer: " + this.characterNames[characterChoiceNum]);
+	System.out.println();
+
+
+	//Choose Muder weapon.
+	System.out.println("Select the MURDER WEAPON from the options below:");
+	for (int i = 0; i < this.weaponNames.length; i++) {
+	    int optionNum = i + 1;
+	    System.out.println(optionNum + ". " + this.weaponNames[i]);
+	}
+
+	int weaponChoiceNum = getPlayerChoice(this.weaponNames.length); //Get the choice from the user/player
+	Weapon weaponChoice = this.getWeapon(this.weaponNames[weaponChoiceNum]);
+	System.out.println();
+	System.out.println("You chose the following MURDER WEAPON: " + this.weaponNames[weaponChoiceNum]);
+	System.out.println();
+
+
 	//Move weapons according to suggestion?
     }
 
@@ -461,10 +514,34 @@ public class Cluedo {
 
 	    //If the current room does not already have a weapon, then add it.
 	    if (currentRoom.getWeapons().isEmpty()) {
-		currentRoom.addWeapon(new Weapon(this.weaponNames[distributedWeapons], currentRoom));
+		Weapon currentWeapon = new Weapon(this.weaponNames[distributedWeapons], currentRoom);
+		currentRoom.addWeapon(currentWeapon);
 		distributedWeapons++;
 	    }
 	}
+    }
+
+    /**
+     * Returns the weapon given the name of the weapon.
+     * @param name
+     */
+    public Weapon getWeapon(String name) {
+
+	for (Weapon weapon : this.weapons) {
+	    if (weapon.getName().equals(name)) {
+		return weapon;
+	    }
+	}
+
+	throw new Error ("ERROR: Weapon not found!");
+
+    }
+
+    /**
+     * Moves given weapon to the given room.
+     */
+    public void moveWeapon(Weapon weapon, Room room) {
+	throw new Error("temporary error. fix this method.....");
     }
 
 
@@ -568,6 +645,17 @@ public class Cluedo {
 	}
     }
 
+
+    //Returns the player given their name.
+    public Player getPlayer (String name){
+	for (Player p : this.players) {
+	    if (p.getName().equals(name)) {
+		return p;
+	    }
+	}
+
+	throw new Error ("ERROR: Player not found!");
+    }
 
     /**
      * Returns the list of players currently playing the game.
