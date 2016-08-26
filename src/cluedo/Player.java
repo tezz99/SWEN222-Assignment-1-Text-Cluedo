@@ -84,6 +84,7 @@ public class Player {
 	return this.currentPosition;
     }
 
+
     public void setPosition(Position pos) {
 	this.currentPosition = pos;
     }

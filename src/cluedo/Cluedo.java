@@ -39,7 +39,6 @@ public class Cluedo {
     private List<Card> publicCards;
     private Room rooms[] = new Room[9];
     private List<Weapon> weapons = new ArrayList<>();
-
     private int numberOfPlayers;
     private Player winner;
 
@@ -166,10 +165,7 @@ public class Cluedo {
 	Position startPosition = player.getPosition();
 	Position moveTo = this.getMove(player, roll); //Get the position the player would like to move to.
 
-	//Player cannot move so return.
-	if (moveTo == null) {
-	    return; 
-	}
+	assert moveTo != null;
 
 	player.setPosition(moveTo); //Set the new position of the player
 
@@ -241,6 +237,8 @@ public class Cluedo {
 		}
 	    }
 	});
+
+
 
 	//Display options avaliable to a player.
 	int optionNum = 0;
@@ -607,7 +605,6 @@ public class Cluedo {
 	}
 
 	characterChoice.setWasTransferred(true); //Set as true so player can have the choice of a suggestion on their next turn.
-
     }
 
 
@@ -717,7 +714,6 @@ public class Cluedo {
 
 	//Add weapon to the new room.
 	room.addWeapon(weapon);
-
     }
 
 

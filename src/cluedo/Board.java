@@ -20,7 +20,7 @@ public class Board {
     private Room[] rooms;
     private Tile[][] gameBoard;
 
-    private final int[][] startingPositions = {{9,0}, {15,0}, {24,6}, {24,19}, {7, 24}, {0, 17}}; //Starting positions of characters, starting from scarlett
+    private final int[][] startingPositions = {{9,0}, {15,0}, {23,6}, {24,19}, {7, 24}, {0, 17}}; //Starting positions of characters, starting from scarlett
 
     public Board(Cluedo game, List<Player> players, Room[] rooms) {
 	this.game = game;
@@ -62,6 +62,7 @@ public class Board {
 				roomTile.setPlayerHolder(true);
 			    }
 			}
+
 			roomTile.setRoom(this.getRoom("Kitchen"));
 			roomTile.setRoomName("Kitchen");
 			roomTile.setPosition(new Position(xPos, yPos));
@@ -200,7 +201,6 @@ public class Board {
 	} catch (FileNotFoundException e) {
 	    e.printStackTrace();
 	}
-
     }
 
     /**
@@ -564,7 +564,7 @@ public class Board {
 	    Room room = this.getRoom("Dining Room");
 	    assert room != null;
 	    room.addEntrance(new Position(7,12));
-	    room.addExit(new Position(8,18));
+	    room.addExit(new Position(8,12));
 	    tile.setRoom(room);
 	} else {
 	    throw new Error("Incorrect entrance coordinates.");
@@ -592,7 +592,6 @@ public class Board {
      * @return
      */
     public Room getRoom(Position p) {
-
 	//If given position is part of a room.
 	if (this.gameBoard[p.getPosX()][p.getPosY()] instanceof RoomTile) {
 	    RoomTile tile = (RoomTile)this.gameBoard[p.getPosX()][p.getPosY()];
